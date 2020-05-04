@@ -88,3 +88,25 @@ ALTER TABLE public."Likes"
 COMMENT ON TABLE public."Likes"
     IS 'This table stores the likes data of the application';
 
+
+
+-- Table: public."Follows"
+
+-- DROP TABLE public."Follows";
+
+CREATE TABLE public."Follows"
+(
+    id integer NOT NULL,
+    user_id text COLLATE pg_catalog."default",
+    follower_id text COLLATE pg_catalog."default",
+    CONSTRAINT "Follows_pkey" PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public."Follows"
+    OWNER to webdev;
+COMMENT ON TABLE public."Follows"
+    IS 'This table stores the follow information for the application';
