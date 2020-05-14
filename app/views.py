@@ -29,7 +29,7 @@ def register():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        return jsonify({"message": "added"}) 
+        return jsonify({"message": "User successfully registered"}) 
     return jsonify(error= form_errors(form)) 
 
 @app.route('/api/users/<user_id>/posts',methods=['GET','POST'])
@@ -89,14 +89,15 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
-        return jsonify({"message": "sucessful"}) 
+        return jsonify({"message": "User successfully logged in"}) 
     return jsonify(error= form_errors(form)) 
 
 
 @app.route('/api/auth/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return jsonify({"message": "User successfully logged out"}) 
+
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')

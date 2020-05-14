@@ -114,7 +114,7 @@ const Register = Vue.component('register', {
                 })
                 .then(function(jsonResponse) {
                     console.log(jsonResponse.errors);
-                    if (jsonResponse.message == "added") {
+                    if (jsonResponse.message == "User successfully registered") {
                         console.log(jsonResponse.message);
                         // redirect to login page
                         router.push('login');
@@ -170,7 +170,7 @@ const Login = Vue.component('login', {
                 })
                 .then(function(jsonResponse) {
                     console.log(jsonResponse.errors);
-                    if (jsonResponse.message == "successful") {
+                    if (jsonResponse.message == "User successfully logged in") {
                         console.log(jsonResponse.message);
                         router.push('explore');
                     }
@@ -421,14 +421,31 @@ const Home = Vue.component('home', {
     }
 });
 
-const Logout = Vue.component('logout', {
-    template: `
-    logout
+const Logout=Vue.component('logout',{
+    template:`
+  <div></div>
     `,
-    data: function() {
-        return {}
+    
+    created:function(){
+        let self=this ;
+        fetch('/api/auth/logout') 
+        .then(function(response){
+            return response.json();
+        }) 
+        .then(function(data){
+            console.log(data);
+            // self.message=data.message
+            router.push('login');
+
+        });
+    },
+    
+    data:function(){
+        return{
+            // message:''
+        }
     }
-});
+})
 const NotFound = Vue.component('not-found', {
     template: `
     <div>
