@@ -1,0 +1,36 @@
+.homediv {
+    display: grid;
+    list-style: none;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 3%;
+}
+
+#sidepic {
+    width: 50%;
+    height: 50%;
+}
+
+#logreg {
+    width: 50%;
+    height: 50%;
+    margin: 5%;
+}
+
+.appname {
+    font-family: URW Chancery L, cursive;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.applogo {
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+}
+
+#buttons {
+    display: grid;
+    list-style: none;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 4%;
+}

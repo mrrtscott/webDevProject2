@@ -1,0 +1,31 @@
+#userheader {
+    display: grid;
+    list-style: none;
+    grid-template-columns: 1fr 3fr 2fr;
+}
+
+#row1 {
+    display: grid;
+    list-style: none;
+    grid-template-columns: 1fr 1fr;
+}
+
+.image__list {
+    display: grid;
+    list-style: none;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    grid-gap: 3%;
+    overflow: hidden;
+}
+
+.image__list img {
+    /* border-right: 5px;
+    border-left:10px; */
+    width: 100%;
+    height: 30%;
+}
+
+.image__list li {
+    border: 1px solid rgb(211, 211, 211);
+}
