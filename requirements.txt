@@ -14,3 +14,6 @@ python-dateutil
 python-editor
 Werkzeug
 WTForms
+email_validator
+click
+Jinja2

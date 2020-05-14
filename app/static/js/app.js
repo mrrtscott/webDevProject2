@@ -153,7 +153,7 @@ const Login = Vue.component('login', {
     
     `,
     methods: {
-        login = function() {
+        login : function() {
             let self = this;
             let loginForm = document.getElementById('loginForn');
             let formdata = new FormData('loginForm');
@@ -345,6 +345,10 @@ const New_post = Vue.component('new-post', {
 
 const Explore = Vue.component('explore', {
     template: `
+    <div>
+     <br><br><br>
+    <h1>Testing</h1>
+    </div>
     <div class="homediv" v-for="post in posts">
         <div>
             <li><img :src=post.profile_photo/> {{post.username}}</li>
@@ -363,7 +367,7 @@ const Explore = Vue.component('explore', {
     data: function() {
         let self = this;
         return {
-            posts = []
+            posts : []
         }
     },
     methods: {
@@ -417,6 +421,14 @@ const Home = Vue.component('home', {
     }
 });
 
+const Logout = Vue.component('logout', {
+    template: `
+    logout
+    `,
+    data: function() {
+        return {}
+    }
+});
 const NotFound = Vue.component('not-found', {
     template: `
     <div>
