@@ -76,13 +76,28 @@ def userpost(user_id):
 
 @app.route('/api/posts', methods=['GET'])
 def posts():
+    # allpost=[]
+    # posts=Posts.query.all()
+    # for post in posts:
+    #     # getusername of post creator
+    #     username=Users.query.filter_by(id=x.user_id).first()
+    #     likes= (Likes.query.filter_by(post_id=x.post_id).count()
+    #     # allpost.append({'username':name,'likes':likes,'photo':x.photo,'caption':x.caption,'created_on':x.created_on})
+    #     allpost.append({'id': post.id , 'user_id': post.user_id, 
+    #         'photo': post.photo, 'caption': post.caption,
+    #         'no_likes': likes, 'created_on': post.created_on})
+
     allpost=[]
-    post=Posts.query.all()
-    for x in post:
+    posts=Posts.query.all()
+
+    for post in posts:
         # getusername of post creator
-        username=Users.query.filter_by(id=x.user_id).first()
-        likes= get_count(Likes.query.filter_by(post_id=x.post_id))
-        allpost.append({'username':name,'likes':likes,'photo':x.photo,'caption':x.caption,'created_on':x.created_on})
+        user=Users.query.filter_by(id=post.user_id).first()
+        likes= Likes.query.filter_by(post_id=post.id).count()
+        allpost.append({'username': user.username , 'user_id': post.user_id, 
+            'photo': post.photo, 'caption': post.caption,
+            'no_likes': likes, 'created_on': post.created_on,'profile_photo':user.profile_photo})
+
     return jsonify({"posts":allpost})
 
 @app.route('/api/posts/<post_id>/like',methods=['POST'])

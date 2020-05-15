@@ -59,18 +59,60 @@
 .image__list img {
     /* border-right: 5px;
     border-left:10px; */
-    width: 100%;
-    height: 30%;
+    width: 340px;
+    height: 250px;
 }
 
 .image__list li {
-    border: 1px solid rgb(211, 211, 211);
+    /* border: 1px solid rgb(211, 211, 211); */
 }
 
 #gallery {
-    margin-top: 10%;
+    margin-top: 7%;
 }
 
 #followbtn {
     width: 100%;
+    background-color: rgb(74, 144, 226);
+}
+
+#row1 li {
+    text-align: center;
+    color: grey;
+    font-weight: bold;
+}
+
+#row1 .post_num {
+    color: black;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+#row1 .followers_num {
+    color: black;
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.follow_button {
+    padding-top: 25%;
+    /* margin: 3%; */
+}
+
+#firstname {
+    font-weight: bold;
+    font-size: large;
+}
+
+#locationli {
+    color: grey;
+    margin-top: 5%;
+}
+
+#middle li {
+    color: grey;
+}
+
+#middle ul .firstname {
+    color: black;
 }

@@ -197,7 +197,7 @@ const User_profile = Vue.component('user-profile', {
             <img class="profilephoto" v-bind:src="'../static/uploads/' + photo"/>
             <div id="middle">
                 <ul>
-                    <li id="firstname">{{firstname}} {{lastname}}</li>
+                    <li id="firstname" class="firstname">{{firstname}} {{lastname}}</li>
                     <li id="locationli">{{location}}</li>
                     <li>Member since {{joined_on}}</li>
                     <li id="biographyli"> {{biography}}</li>
@@ -207,25 +207,26 @@ const User_profile = Vue.component('user-profile', {
             </div>
             <div id="followers">
               <div id="row1">
-                    <li>6</li>
-                    <li>10</li>
+                    <li class="post_num">6</li>
+                    <li class="followers_num">10</li>
                     <li>Posts</li>
                     <li >Followers</li>
                
                
               </div>
-              <button id="followbtn" class="btn btn-primary"> Follow</button>
+              <div class="follow_button">
+                <button id="followbtn" class="btn btn-primary"> Follow</button>
+              </div>
             </div>
         </div>
 
         <div id="gallery">
-        for images 
-        <ul class="image__list">
-            <li v-for="post in posts" class="image__item"> <img v-bind:src="'../static/uploads/' + post.photo""/>
-            </li>
-          </ul>
+            <ul class="image__list">
+                <li v-for="post in posts" class="image__item"> <img v-bind:src="'../static/uploads/' + post.photo""/>
+                </li>
+            </ul>
         </div>
-        </div>
+    </div>
     `,
     created: function() {
         let self = this;
@@ -340,45 +341,60 @@ const Newpost = Vue.component('newpost', {
 const Explore = Vue.component('explore', {
     template: `
     <div>
-     <br><br><br>
-    <h1>Testing</h1>
-    <button v-on:click="createpost"> createpost</button>
+        <br><br><br>
+        
+        <button v-on:click="createpost"> createpost</button>
 
-    </div>
-    <div class="homediv" v-for="post in posts">
-        <div>
-            <li><img :src=post.profile_photo/> {{post.username}}</li>
-            <li><img :src=post.photo/></li>
-            <li>{{post.caption}}</li>
-        <div>
-        <div>
-            <li> <img src="static/images/likes.png"> {{post.likes}} Likes</li>
-            <li>{{post.created_on}}</li>
+        
+        <div class="homediv" v-for="post in posts">
+            <div class="card" id="cardlay">
+                <div>
+                    <li><img class="userprofilephoto" v-bind:src="'../static/uploads/' + post.profile_photo"/> {{post.username}}</li>
+                    <li><img class="postphoto" v-bind:src="'../static/uploads/' + post.photo"/></li>
+                    <li>{{post.caption}}</li>
+                </div>
+                <div id="likendate">
+                    <li> <i class="fa fa-likes" aria-hidden="true"></i>  {{post.likes}} Likes</li>
+                    <li>{{post.created_on}}</li>
+                </div>
+            </div>
+            
         </div>
-
-
     </div>
-
     `,
+    created: function() {
+        let self = this;
+        // fetch("/api/users/" + self.id + "/post")
+        fetch("/api/posts")
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(jsonResponse) {
+                console.log(jsonResponse);
+                // self.message=data.message
+                self.posts = jsonResponse.posts;
+                self.username = jsonResponse.username;
+                self.photo = jsonResponse.photo;
+
+                // router.push('login');
+
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
     data: function() {
         let self = this;
         return {
-            posts: []
+            posts: [],
+            username: "",
+            photo: ""
         }
     },
     methods: {
         createpost: function(event) {
 
             router.push('/posts/new');
-
-        }
-    },
-    data: function() {
-        return {
-
-            on: false,
-            success: false,
-            posts: []
 
         }
     }
