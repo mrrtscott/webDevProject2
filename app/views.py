@@ -1,7 +1,7 @@
 import os
 from app import app, db
 from flask import render_template, flash, request,make_response, redirect, url_for, jsonify, json
-from app.forms import RegistrationForm, LoginForm
+from app.forms import RegistrationForm, LoginForm,PostForm
 from app.models import Users, Posts, Likes
 from flask_login import login_required,current_user, login_user,logout_user
 from flask import g
@@ -38,42 +38,41 @@ def register():
 def userpost(user_id):
     if request.method == 'POST':
         form = PostForm()
-        if form.validate_on_submit():
-            caption = form.caption.data
-            
-            photo = form.photo.data
-            filename = photo.filename
-            photo.save(os.path.join(
-                app.config['UPLOAD_FOLDER'], filename
-            ))
-            
-            
-            post = Post(user_id, filename, caption)
+        # if form.validate_on_submit():
+        caption = form.caption.data
+        
+        photo = form.photo.data
+        filename = photo.filename
+        photo.save(os.path.join(
+            app.config['UPLOAD_FOLDER'], filename
+        ))
+        
+        
+        post = Posts(user_id, filename, caption)
 
-            db.session.add(post)
-            db.session.commit()
-            
-            response = {'message': 'Successfully created a post!'}
-    else:
-        allpost=[]
-        posts=Posts.query.filter_by(user_id=user_id).all()
-        user=Users.query.filter_by(id=user_id).first()
+        db.session.add(post)
+        db.session.commit()
+        return jsonify({'message': 'Successfully created a post!'})
+  
+    allpost=[]
+    posts=Posts.query.filter_by(user_id=user_id).all()
+    user=Users.query.filter_by(id=user_id).first()
 
-        for post in posts:
-            # getusername of post creator
-            
-            likes= get_count(Likes.query.filter_by(post_id=x.post_id))
-            allpost.append({'id': post.id , 'user_id': post.user_id, 
-                'photo': post.photo, 'caption': post.caption,
-                'no_likes': likes, 'created_on': post.created_on})
-    
-        return jsonify({'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'posts':allpost})
+    for post in posts:
+        # getusername of post creator
+        
+        likes= Likes.query.filter_by(post_id=post.id).count()
+        allpost.append({'id': post.id , 'user_id': post.user_id, 
+            'photo': post.photo, 'caption': post.caption,
+            'no_likes': likes, 'created_on': post.created_on})
+
+    return jsonify({'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost})
     # return jsonify({"posts":allpost})
 
-def get_count(q):
-    count_q = q.statement.with_only_columns([func.count()]).order_by(None)
-    count = q.session.execute(count_q).scalar()
-    return count
+# def get_count(q):
+#     count_q = q.statement.with_only_columns([func.count()]).order_by(None)
+#     count = q.session.execute(count_q).scalar()
+#     return count
 
 @app.route('/api/posts', methods=['GET'])
 def posts():

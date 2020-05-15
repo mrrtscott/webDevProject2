@@ -2,18 +2,35 @@
     display: grid;
     list-style: none;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 3%;
+    grid-gap: 1.5%;
+    /* border: 1px solid grey; */
+}
+
+.rightside_home {
+    background-color: rgb(255, 255, 255);
+    padding: 50px;
+    border: solid 1px rgb(185, 184, 184);
+    border-radius: 5px;
+    padding: 10%;
+}
+
+.rightside_home p {
+    padding-bottom: 30px;
 }
 
 #sidepic {
-    width: 50%;
-    height: 50%;
+    align-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 #logreg {
-    width: 50%;
-    height: 50%;
-    margin: 5%;
+    /* width: 50%; */
+    height: 100%;
+    /* margin: 5%; */
+    background-color: white;
+    border: solid 1px rgb(185, 184, 184);
+    border-radius: 5px;
 }
 
 .appname {
@@ -28,9 +45,17 @@
     margin-right: 4px;
 }
 
-#buttons {
+.buttons {
     display: grid;
     list-style: none;
     grid-template-columns: 1fr 1fr;
     grid-gap: 4%;
+}
+
+#register_button {
+    background-color: rgb(126, 211, 33);
+}
+
+#login_button {
+    background-color: rgb(74, 144, 226);
 }

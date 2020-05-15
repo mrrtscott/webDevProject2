@@ -106,8 +106,13 @@ class Posts(db.Model):
     photo = db.Column(db.String(300))
     created_on = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     caption=db.Column(db.String(300))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    user_id = db.Column(db.Integer)
     
+
+    def __init__(self,user_id, photo, caption):
+        self.user_id = user_id
+        self.photo = photo
+        self.caption = caption
     
 
 
@@ -117,9 +122,8 @@ class Posts(db.Model):
     
 class Likes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id',ondelete='CASCADE'))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id',ondelete='CASCADE'))
-    created_on = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer)
+    post_id = db.Column(db.Integer)
     def __init__(self,userid,post_id):
         self.user_id=userid
         self.post_id=post_id

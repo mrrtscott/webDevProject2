@@ -4,7 +4,7 @@ Vue.component('app-header', {
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div>
         <img>  
-        <a class="navbar-brand" href="#">Photogram</a>
+        <a class="navbar-brand appname" href="#">Photogram</a>
     </div>
     <div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -192,42 +192,40 @@ const Login = Vue.component('login', {
 
 const User_profile = Vue.component('user-profile', {
     template: `
-    <div class="maindiv">
+    <div class="userprofilediv">
         <div id="userheader">
-            <img src="#"/>
-            <div>
+            <img class="profilephoto" v-bind:src="'../static/uploads/' + photo"/>
+            <div id="middle">
                 <ul>
-                    <li>{{firstname}} last name</li>
-                    <li>location=</li>
-                    <li>Member since january 2018</li>
-                    <li>bio</li>
-                    <p>{{ biography }}</p>
+                    <li id="firstname">{{firstname}} {{lastname}}</li>
+                    <li id="locationli">{{location}}</li>
+                    <li>Member since {{joined_on}}</li>
+                    <li id="biographyli"> {{biography}}</li>
                 </ul>
 
                 
             </div>
             <div id="followers">
               <div id="row1">
-                <ul>
-                    <li>post counter</li>
-                    <li>followers counter</li>
+                    <li>6</li>
+                    <li>10</li>
                     <li>Posts</li>
-                    <li>Followers</li>
-                </ul>
+                    <li >Followers</li>
+               
                
               </div>
-              <button> Follow</button>
+              <button id="followbtn" class="btn btn-primary"> Follow</button>
             </div>
         </div>
 
-        <div>
+        <div id="gallery">
         for images 
         <ul class="image__list">
-            <li v-for="post in posts" class="image__item"> <img src="post.urlToImage"/>
+            <li v-for="post in posts" class="image__item"> <img v-bind:src="'../static/uploads/' + post.photo""/>
             </li>
           </ul>
         </div>
-    </div>
+        </div>
     `,
     created: function() {
         let self = this;
@@ -243,6 +241,10 @@ const User_profile = Vue.component('user-profile', {
                 self.posts = jsonResponse.posts;
                 self.lastname = jsonResponse.lastname;
                 self.username = jsonResponse.username;
+                self.joined_on = jsonResponse.joinedon;
+                self.location = jsonResponse.location;
+                self.biography = jsonResponse.biography;
+                self.photo = jsonResponse.photo;
 
                 // router.push('login');
 
@@ -257,39 +259,38 @@ const User_profile = Vue.component('user-profile', {
             posts: [],
             firstname: "",
             lastname: "",
-            username: ""
+            username: "",
+            joined_on: "",
+            location: "",
+            biography: "",
+            photo: ""
 
         }
     }
 });
 
 
-const New_post = Vue.component('new-post', {
+const Newpost = Vue.component('newpost', {
     template: `
-    <div>
+    <div class="maindiv">
+       
         <form @submit.prevent="uploadpost" enctype="multipart/form-data" id="uploadForm">
-            <div class="alert alert-success" role="alert" v-if="on && success" v-for="message in messages">
-                {{message}}
-            </div>
-            <div class="alert alert-danger" role="alert"  v-if="on && !success" >
-                <div v-for="message in messages">
-                    <li> {{message}}</li>
-
-                </div>
-            </div>
-  
-
-            <div class="form-group">
-                <label for="photo">Photo</label>
-                <input name="photo" id="photo" type="file">
-            </div>
-
-            <div class="form-group">
-            <label for="description">Caption</label>
-            <textarea class="form-control" name="description" id="description" placeholder="Enter description here"></textarea>
+       
+        <div class="form-group">
+            <label for="photo">Photo</label>
+            <input name="photo" id="photo" type="file">
         </div>
-             <button type=submit class="btn btn-primary" > Submit </button>
-        </form>
+
+        <div class="form-group">
+            <label for="caption">Caption</label>
+            <textarea class="form-control" name="caption" id="caption" placeholder="Enter description here"></textarea>
+        </div>
+
+        <div class="register_button">
+            <button type="submit" name="upload" class="btn btn-success">Upload</button>
+        </div>
+
+    </form>
     </div>
     `,
     methods: {
@@ -297,13 +298,13 @@ const New_post = Vue.component('new-post', {
             self = this;
             let uploadForm = document.getElementById('uploadForm');
             let form_data = new FormData(uploadForm);
-            fetch("/api/users/${user_id}/posts", {
+            fetch("/api/users/" + self.id + "/posts", {
 
                     method: 'POST',
                     body: form_data,
-                    // headers: {
-                    //     'X-CSRFToken': token
-                    // },
+                    headers: {
+                        'X-CSRFToken': token
+                    },
                     credentials: 'same-origin'
                 })
                 .then(function(response) {
@@ -312,23 +313,11 @@ const New_post = Vue.component('new-post', {
                 .then(function(jsonResponse) {
                     // display a success message
                     //undefined - no erros
-                    console.log(jsonResponse.errors)
-                    if (jsonResponse.errors != undefined) {
-                        console.log(jsonResponse)
-                        nextjson = jsonResponse.errors.replace("['", "");
-                        nextjson = nextjson.replace("']", "");
-                        nextjson = nextjson.replace("'", "");
-                        nextjson = nextjson.replace("'E", "E");
-                        self.messages = nextjson.split(",")
-                        self.on = true;
-                        self.success = false;
-                    } else {
-                        console.log(jsonResponse)
-                        self.messages = [jsonResponse.message];
-                        self.on = true;
-                        self.success = true;
-                        // change route to explore
+                    console.log(jsonResponse.message)
+                    if (jsonResponse.message == "Successfully created a post!") {
+                        router.push('explore');
                     }
+
 
 
                 })
@@ -339,10 +328,8 @@ const New_post = Vue.component('new-post', {
     },
     data: function() {
         return {
-
-            on: false,
-            success: false,
-            messages: []
+            id: 8,
+            messages: ""
 
         }
     }
@@ -355,6 +342,8 @@ const Explore = Vue.component('explore', {
     <div>
      <br><br><br>
     <h1>Testing</h1>
+    <button v-on:click="createpost"> createpost</button>
+
     </div>
     <div class="homediv" v-for="post in posts">
         <div>
@@ -368,8 +357,8 @@ const Explore = Vue.component('explore', {
         </div>
 
 
-
     </div>
+
     `,
     data: function() {
         let self = this;
@@ -378,24 +367,10 @@ const Explore = Vue.component('explore', {
         }
     },
     methods: {
-        uploadpost: function() {
-            let self = this;
-            let uploadForm = document.getElementById('uploadForm');
-            let form_data = new FormData(uploadForm);
-            fetch("/api/posts", {
+        createpost: function(event) {
 
-                    // add headers
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(jsonResponse) {
-                    // get all posts
-                    self.posts = jsonResponse.posts;
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
+            router.push('/posts/new');
+
         }
     },
     data: function() {
@@ -414,14 +389,16 @@ const Home = Vue.component('home', {
     template: `
     <div class="maindiv">
         <div class="homediv">
-            <img id="sidepic" src ="/static/images/instagram.png" /> 
+            <img id="sidepic" src ="/static/images/left_home_img.png" /> 
             <div id="logreg">
-                <a><img src="./static/images/logo.jpeg"/> Photogram</a>
-                <hr>
-                <li>Share photos of your favourite momemnts with friends,family and the world</li>
-                <div id="buttons">
-                    <button v-on:click="register" class="btn btn-secondary"> Register</button> 
-                    <button v-on:click="login" class="btn btn-primary"> Login</button>
+                <div class=rightside_home>
+                    <a class="appname"><i class="fa fa-camera" aria-hidden="true"></i> Photogram</a>
+                    <hr>
+                    <p>Share photos of your favourite momemnts with friends,family and the world</p>
+                    <div class="buttons">
+                        <button v-on:click="register" class="btn btn-success" id="register_button"> Register</button> 
+                        <button v-on:click="login" class="btn btn-primary" id="login_button"> Login</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -489,7 +466,7 @@ const router = new VueRouter({
         { path: "/logout", component: Logout },
         { path: "/explore", component: Explore },
         { path: "/users/:user_id", component: User_profile },
-        { path: "/posts/new", component: New_post },
+        { path: "/posts/new", component: Newpost },
         // This is a catch all route in case none of the above matches
         { path: "*", component: NotFound }
     ]
