@@ -32,35 +32,39 @@ class Users(db.Model, UserMixin,SearchableMixin):
     lastname = db.Column(db.String(140))
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
+    password = db.Column(db.String(300))
     biography = db.Column(db.String(140))
     location = db.Column(db.String(150))
-    imgProfile = db.Column(db.String(300))
-    posts = db.relationship('Post',backref='author', lazy='dynamic',passive_deletes=True )
-    posts_liked = db.relationship('Likes', backref='user', lazy='dynamic',passive_deletes=True)
-    followed = db.relationship(
-        'Users', secondary=followers,
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic',passive_deletes=True)
+    profile_photo  = db.Column(db.String(300))
+    joined_on = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    # posts = db.relationship('Posts',backref='author', lazy='dynamic',passive_deletes=True )
+    # posts_liked = db.relationship('Likes', backref='user', lazy='dynamic',passive_deletes=True)
+    # followed = db.relationship(
+    #     'Users', secondary=followers,
+    #     primaryjoin=(followers.c.follower_id == id),
+    #     secondaryjoin=(followers.c.followed_id == id),
+    #     backref=db.backref('followers', lazy='dynamic'), lazy='dynamic',passive_deletes=True)
     
-    def __init__(self,firstname, lastname, username, email,location,biography, imgProfile,):
+    def __init__(self,firstname, lastname, username, email,location,biography, imgProfile):
         self.firstname = firstname
         self.lastname = lastname
         self.username = username
         self.email = email
         self.biography = biography
-        self.imgProfile = imgProfile
-       
+        self.profile_photo = imgProfile
+        self.location=location
+    
+
 
     def __repr__(self):
     	return '<Users {}>'.format(self.username)
 
     def set_password(self, password):
-    	self.password_hash = generate_password_hash(password)
+    	self.password = generate_password_hash(password)
 
     def check_password(self, password):
-    	return check_password_hash(self.password_hash, password)
+    	return check_password_hash(self.password, password)
 
     # def avatar(self, size):
     # 	digest = md5(self.email.lower().encode('utf-8')).hexdigest()
@@ -99,7 +103,7 @@ def load_user(id):
 
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    img = db.Column(db.String(300))
+    photo = db.Column(db.String(300))
     created_on = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     caption=db.Column(db.String(300))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))

@@ -1,10 +1,12 @@
-from flask import render_template, flash, request,make_response, redirect, url_for, jsonify, json
+import os
 from app import app, db
+from flask import render_template, flash, request,make_response, redirect, url_for, jsonify, json
 from app.forms import RegistrationForm, LoginForm
 from app.models import Users, Posts, Likes
 from flask_login import login_required,current_user, login_user,logout_user
 from flask import g
 # from app.forms import SearchForm
+from werkzeug.utils import secure_filename
 from datetime import datetime
 import random, time
 
@@ -14,7 +16,7 @@ import random, time
 @app.route('/api/users/register', methods=['POST'])
 def register():
     form = RegistrationForm()
-    if request.method=="POST" and form.validate_on_submit():
+    if request.method=="POST":
         username=form.username.data
         password=form.password.data
         firstname=form.firstname.data
@@ -24,8 +26,8 @@ def register():
         biography=form.biography.data
         photourl=form.photo.data 
         filename=secure_filename(photourl.filename)
-        profile_picture.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-        user = User(username,firstname,lastname,email,location,biography,photourl)
+        photourl.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        user = Users(firstname,lastname,username,email,location,biography,filename)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -34,15 +36,39 @@ def register():
 
 @app.route('/api/users/<user_id>/posts',methods=['GET','POST'])
 def userpost(user_id):
-    if(request.method=="POST"):
+    if request.method == 'POST':
+        form = PostForm()
+        if form.validate_on_submit():
+            caption = form.caption.data
+            
+            photo = form.photo.data
+            filename = photo.filename
+            photo.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], filename
+            ))
+            
+            
+            post = Post(user_id, filename, caption)
+
+            db.session.add(post)
+            db.session.commit()
+            
+            response = {'message': 'Successfully created a post!'}
+    else:
         allpost=[]
-        post=Posts.query.filter_by(user_id=user_id).all()
-        for x in post:
+        posts=Posts.query.filter_by(user_id=user_id).all()
+        user=Users.query.filter_by(id=user_id).first()
+
+        for post in posts:
             # getusername of post creator
-            username=Users.query.filter_by(id=x.user_id).first()
+            
             likes= get_count(Likes.query.filter_by(post_id=x.post_id))
-            allpost.append([name,likes,x.photo,x.caption,x.created_on])
-        return jsonify({"posts":allpost})
+            allpost.append({'id': post.id , 'user_id': post.user_id, 
+                'photo': post.photo, 'caption': post.caption,
+                'no_likes': likes, 'created_on': post.created_on})
+    
+        return jsonify({'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'posts':allpost})
+    # return jsonify({"posts":allpost})
 
 def get_count(q):
     count_q = q.statement.with_only_columns([func.count()]).order_by(None)
@@ -75,20 +101,20 @@ def followuser(user_id):
     db.session.commit()
     return jsonify({"message":"followed user"})
 
-@app.route('/api/auth/login', methods=['GET', 'POST'])
+@app.route('/api/auth/login', methods=['POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
+    # if current_user.is_authenticated:
+    #     return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = Users.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
-            return redirect(url_for('login'))
+            # return redirect(url_for('login'))
        	login_user(user)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+        # next_page = request.args.get('next')
+        # if not next_page or url_parse(next_page).netloc != '':
+        #     next_page = url_for('index')
         return jsonify({"message": "User successfully logged in"}) 
     return jsonify(error= form_errors(form)) 
 

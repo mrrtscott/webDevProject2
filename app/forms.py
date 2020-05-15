@@ -8,6 +8,8 @@ from flask import request
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
+    firstname= StringField('FirstName')
+    lastname= StringField('LastName')
     email = StringField('Email', validators=[DataRequired(), Email()])
     location = StringField('Location', validators=[DataRequired()])
     gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female')], validators=[DataRequired()])
@@ -19,12 +21,12 @@ class RegistrationForm(FlaskForm):
 
 
     def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
+        user = Users.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        user = Users.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
 

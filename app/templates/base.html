@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -8,15 +9,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>INFO3180 Lab 7</title>
+    <title>Photogram</title>
 
     <!-- Bootstrap -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
-    {% block css %} {% endblock%}
-  </head>
-  <body>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}"> {% block css %} {% endblock%}
+</head>
+
+<body>
     <div id="main">
         {% block main %}{% endblock %}
     </div>
@@ -28,7 +29,10 @@
     <script src="{{ url_for('static', filename='js/vue.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue-router.js') }}"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-    <script>const token = "{{ csrf_token() }}";</script>
+    <script>
+        const token = "{{ csrf_token() }}";
+    </script>
     {% block js %} {% endblock%}
-  </body>
+</body>
+
 </html>

@@ -45,42 +45,45 @@ Vue.component('app-footer', {
 
 const Register = Vue.component('register', {
     template: `
+    <div class="maindiv">
         <div class="register_form">
             <form @submit.prevent="registration" enctype="multipart/form-data" id="signupForm">
             
                 <div class="form-group">
                     <label for ="username">Username</label>
-                    <input type="text" name="username" id="username" class="form_control"/>
+                    <input type="text" name="username" id="username" class="form-control"/>
                 </div>
 
                 <div class="form-group">
                     <label for ="password">Password</label>
-                    <input type="password" name="password" id="password" class="form_control"/>
+                    <input type="password" name="password" id="password" class="form-control"/>
                 </div>
 
                 <div class="form-group">
                     <label for ="firstname">Firstname</label>
-                    <input type="text" name="firstname" id="firstname" class="form_control"/>
+                    <input type="text" name="firstname" id="firstname" class="form-control"/>
                 </div>
 
                 <div class="form-group">
                     <label for ="lastname">lastname</label>
-                    <input type="text" name="lastname" id="lastname" class="form_control"/>
+                    <input type="text" name="lastname" id="lastname" class="form-control"/>
                 </div>
 
                 <div class="form-group">
                     <label for ="email">Email</label>
-                    <input type="email" name="email" id="email" class="form_control"/>
+                    <input type="email" name="email" id="email" class="form-control"/>
                 </div>
 
                 <div class="form-group">
                     <label for ="location">Location</label>
-                    <input type="text" name="location" id="location" class="form_control"/>
+                    <input type="text" name="location" id="location" class="form-control"/>
                 </div>
 
                 <div class="form-group">
                     <label for ="biography">Biography</label>
-                    <textarea  name="biography" id="biography" rows="4" cols="60" coclass="form_control"/>
+                    <div class="biography">
+                        <textarea  name="biography" id="biography" rows="4" cols="60" coclass="form-control"/>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -95,6 +98,7 @@ const Register = Vue.component('register', {
 
             </form>
         </div>
+    </div>
     `,
     methods: {
         registration: function() {
@@ -105,9 +109,9 @@ const Register = Vue.component('register', {
 
                     method: 'POST',
                     body: formdata,
-                    // headers: {
-                    //     'X-CSRFToken': token
-                    // }
+                    headers: {
+                        'X-CSRFToken': token
+                    }
                 })
                 .then(function(response) {
                     return response.json();
@@ -131,17 +135,18 @@ const Register = Vue.component('register', {
 
 const Login = Vue.component('login', {
     template: `
+    <div class="maindiv">
         <div class="login">
             <form @submit.prevent="login" enctype="multipart/form-data" id="loginForm">
 
                 <div class="form-group">
                     <label for ="username">Username</label>
-                    <input type="text" name="username" id="username" class="form_control"/>
+                    <input type="text" name="username" id="username" class="form-control"/>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" name="password id="password" class="form-group">
+                    <input type="password" name="password" id="password" class="form-control"/>
                 </div>
 
                 <div class="login_button">
@@ -150,20 +155,20 @@ const Login = Vue.component('login', {
 
             </form>
         </div>   
-    
+    </div>
     `,
     methods: {
-        login : function() {
+        login: function() {
             let self = this;
-            let loginForm = document.getElementById('loginForn');
-            let formdata = new FormData('loginForm');
-            fetch("/api/users/login", {
+            let loginForm = document.getElementById('loginForm');
+            let formdata = new FormData(loginForm);
+            fetch("/api/auth/login", {
 
                     method: 'POST',
                     body: formdata,
-                    // headers: {
-                    //     'X-CSRFToken': token
-                    // }
+                    headers: {
+                        'X-CSRFToken': token
+                    }
                 })
                 .then(function(response) {
                     return response.json();
@@ -187,14 +192,16 @@ const Login = Vue.component('login', {
 
 const User_profile = Vue.component('user-profile', {
     template: `
+    <div class="maindiv">
         <div id="userheader">
-            <img src=""/>
+            <img src="#"/>
             <div>
                 <ul>
-                    <li>firstname last ame</li>
+                    <li>{{firstname}} last name</li>
                     <li>location=</li>
                     <li>Member since january 2018</li>
                     <li>bio</li>
+                    <p>{{ biography }}</p>
                 </ul>
 
                 
@@ -216,41 +223,41 @@ const User_profile = Vue.component('user-profile', {
         <div>
         for images 
         <ul class="image__list">
-            <li v-for="image in images" class="image__item"> <img src="image.urlToImage"/>
+            <li v-for="post in posts" class="image__item"> <img src="post.urlToImage"/>
             </li>
           </ul>
         </div>
-    
+    </div>
     `,
-    methods: {
-        uploadpost: function() {
-            let self = this;
+    created: function() {
+        let self = this;
+        // fetch("/api/users/" + self.id + "/post")
+        fetch("/api/users/" + self.id + "/posts")
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(jsonResponse) {
+                console.log(jsonResponse);
+                // self.message=data.message
+                self.firstname = jsonResponse.firstname;
+                self.posts = jsonResponse.posts;
+                self.lastname = jsonResponse.lastname;
+                self.username = jsonResponse.username;
 
-            let uploadForm = document.getElementById('uploadForm');
-            let form_data = new FormData(uploadForm);
-            fetch("/api/users/" + self.id + "/posts", {
-                    method: 'GET',
-                    // headers: {
-                    //     'X-CSRFToken': token
-                    // },
-                    credentials: 'same-origin'
-                })
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(jsonResponse) {
-                    console.log(jsonResponse);
-                    self.posts = jsonResponse.posts;
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        }
+                // router.push('login');
+
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     },
     data: function() {
         return {
             id: this.$route.params.user_id,
-            posts: []
+            posts: [],
+            firstname: "",
+            lastname: "",
+            username: ""
 
         }
     }
@@ -367,7 +374,7 @@ const Explore = Vue.component('explore', {
     data: function() {
         let self = this;
         return {
-            posts : []
+            posts: []
         }
     },
     methods: {
@@ -405,50 +412,64 @@ const Explore = Vue.component('explore', {
 
 const Home = Vue.component('home', {
     template: `
-  <h1> lol,dwl </h1>
-    <div class="homediv">
-        <img id="sidepic" src ="/static/images/homepage.png" />
-        <div id="logreg">
-            <li class="appname"><img class="applogo" src="/static/images/logo.png"/> Photogram</li>
-            <li>Share photos of your favourite momemnts with friends,family and the world</li>
-            <div id="buttons"><li><button class="btn btn-secondary"> Register</button> <button class="btn btn-primary"> Login</button></li> </div>
+    <div class="maindiv">
+        <div class="homediv">
+            <img id="sidepic" src ="/static/images/instagram.png" /> 
+            <div id="logreg">
+                <a><img src="./static/images/logo.jpeg"/> Photogram</a>
+                <hr>
+                <li>Share photos of your favourite momemnts with friends,family and the world</li>
+                <div id="buttons">
+                    <button v-on:click="register" class="btn btn-secondary"> Register</button> 
+                    <button v-on:click="login" class="btn btn-primary"> Login</button>
+                </div>
+            </div>
         </div>
-    
     </div>
    `,
+    methods: {
+        register: function(event) {
+
+            router.push('register');
+
+        },
+        login: function(event) {
+            router.push('login');
+        }
+    },
     data: function() {
         return {}
     }
 });
 
-const Logout=Vue.component('logout',{
-    template:`
+const Logout = Vue.component('logout', {
+    template: `
   <div></div>
     `,
-    
-    created:function(){
-        let self=this ;
-        fetch('/api/auth/logout') 
-        .then(function(response){
-            return response.json();
-        }) 
-        .then(function(data){
-            console.log(data);
-            // self.message=data.message
-            router.push('login');
 
-        });
+    created: function() {
+        let self = this;
+        fetch('/api/auth/logout')
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                console.log(data);
+                // self.message=data.message
+                router.push('login');
+
+            });
     },
-    
-    data:function(){
-        return{
+
+    data: function() {
+        return {
             // message:''
         }
     }
 })
 const NotFound = Vue.component('not-found', {
     template: `
-    <div>
+    <div class="maindiv">
         <h1>404 - Not Found</h1>
     </div>
     `,

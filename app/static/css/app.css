@@ -4,3 +4,8 @@
 @import "registration.css";
 @import "login.css";
 @import "home.css";
+.maindiv {
+    /* display: grid;
+    grid-column-gap: 25px; */
+    margin-top: 20%;
+}
