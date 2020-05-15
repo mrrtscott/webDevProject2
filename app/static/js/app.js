@@ -7,6 +7,7 @@ Vue.component('app-header', {
         <a class="navbar-brand appname" href="#">Photogram</a>
     </div>
     <div>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -340,10 +341,12 @@ const Newpost = Vue.component('newpost', {
 
 const Explore = Vue.component('explore', {
     template: `
-    <div>
+    <div id="explore_main">
         <br><br><br>
         
-        <button v-on:click="createpost"> createpost</button>
+        <div class= newpost_button>
+         <button v-on:click="createpost"> New Post</button>
+        </div>
 
         
         <div class="homediv" v-for="post in posts">
@@ -354,7 +357,7 @@ const Explore = Vue.component('explore', {
                     <li>{{post.caption}}</li>
                 </div>
                 <div id="likendate">
-                    <li> <i class="fa fa-likes" aria-hidden="true"></i>  {{post.likes}} Likes</li>
+                    <li> <i class="fa fa-heart-o" aria-hidden="true"></i>  <i class="fa fa-heart" aria-hidden="true"></i>{{post.likes}} Likes</li>
                     <li>{{post.created_on}}</li>
                 </div>
             </div>
