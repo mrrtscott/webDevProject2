@@ -1,21 +1,64 @@
-#explore_main {}
+#explore_main {
+    margin-top: 10%;
+    display: grid;
+    list-style: none;
+    grid-template-columns: 2fr 1fr;
+}
 
 .userprofilephoto {
     width: 50px;
     height: 50px;
+    margin-top: 3%;
 }
 
 .postphoto {
-    width: 300px;
-    height: 200px;
+    width: 39.87rem;
+    height: 25rem;
+}
+
+#card {
+    margin-bottom: 20px;
 }
 
 #cardlay {
     margin-bottom: 20px;
+    height: 1000px;
+}
+
+#cardlay li {
+    list-style: none;
 }
 
 #likendate {
+    padding-left: 5%;
+    padding-right: 5%;
     display: grid;
     list-style: none;
     grid-template-columns: repeat(2, 1fr);
 }
+
+#createdate {
+    margin-left: 17%;
+}
+
+.posted_img {
+    width: 40rem;
+    height: 30rem;
+}
+
+.caption {
+    /* margin-top: 8%;
+    margin-bottom: 40%;
+    height: 10rem; */
+    list-style: none;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.caplike {}
+
+#newpostbtn {
+    width: 70%;
+}
+
+.newpost_button {}

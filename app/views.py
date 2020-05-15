@@ -32,7 +32,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         return jsonify({"message": "User successfully registered"}) 
-    return jsonify(error= form_errors(form)) 
+    return jsonify(error= form_errors(form)),201
 
 @app.route('/api/users/<user_id>/posts',methods=['GET','POST'])
 def userpost(user_id):
@@ -52,7 +52,7 @@ def userpost(user_id):
 
         db.session.add(post)
         db.session.commit()
-        return jsonify({'message': 'Successfully created a post!'})
+        return jsonify({'message': 'Successfully created a post!'}),201
   
     allpost=[]
     posts=Posts.query.filter_by(user_id=user_id).all()
@@ -66,30 +66,14 @@ def userpost(user_id):
             'photo': post.photo, 'caption': post.caption,
             'no_likes': likes, 'created_on': post.created_on})
 
-    return jsonify({'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost})
-    # return jsonify({"posts":allpost})
+    return jsonify({'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost}),200
 
-# def get_count(q):
-#     count_q = q.statement.with_only_columns([func.count()]).order_by(None)
-#     count = q.session.execute(count_q).scalar()
-#     return count
 
 @app.route('/api/posts', methods=['GET'])
+#@login_required
 def posts():
-    # allpost=[]
-    # posts=Posts.query.all()
-    # for post in posts:
-    #     # getusername of post creator
-    #     username=Users.query.filter_by(id=x.user_id).first()
-    #     likes= (Likes.query.filter_by(post_id=x.post_id).count()
-    #     # allpost.append({'username':name,'likes':likes,'photo':x.photo,'caption':x.caption,'created_on':x.created_on})
-    #     allpost.append({'id': post.id , 'user_id': post.user_id, 
-    #         'photo': post.photo, 'caption': post.caption,
-    #         'no_likes': likes, 'created_on': post.created_on})
-
     allpost=[]
     posts=Posts.query.all()
-
     for post in posts:
         # getusername of post creator
         user=Users.query.filter_by(id=post.user_id).first()
@@ -98,14 +82,14 @@ def posts():
             'photo': post.photo, 'caption': post.caption,
             'no_likes': likes, 'created_on': post.created_on,'profile_photo':user.profile_photo})
 
-    return jsonify({"posts":allpost})
+    return jsonify({"posts":allpost}),200
 
 @app.route('/api/posts/<post_id>/like',methods=['POST'])
 def addlikes(post_id):
     like = Likes(current_user.id,post_id)
     db.session.add(like)
     db.session.commit()
-    return jsonify({"message":"liked"})
+    return jsonify({"message":"liked"}),201
 
 
 @app.route('/api/users/<user_id>/follow')
@@ -113,7 +97,7 @@ def followuser(user_id):
     follow=Follow(current_user.id,user_id)
     db.session.add(follow)
     db.session.commit()
-    return jsonify({"message":"followed user"})
+    return jsonify({"message":"followed user"}),201
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
@@ -123,20 +107,20 @@ def login():
     if form.validate_on_submit():
         user = Users.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            # flash('Invalid username or password')
             # return redirect(url_for('login'))
+            return jsonify({"message": "Username or Password Incorrect"}) 
+
        	login_user(user)
-        # next_page = request.args.get('next')
-        # if not next_page or url_parse(next_page).netloc != '':
-        #     next_page = url_for('index')
         return jsonify({"message": "User successfully logged in"}) 
-    return jsonify(error= form_errors(form)) 
+    return jsonify(error= form_errors(form)),200
 
 
 @app.route('/api/auth/logout')
+#@login_required
 def logout():
     logout_user()
-    return jsonify({"message": "User successfully logged out"}) 
+    return jsonify({"message": "User successfully logged out"}),200
 
 
 @app.route('/', defaults={'path': ''})

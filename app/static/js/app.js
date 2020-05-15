@@ -138,6 +138,9 @@ const Login = Vue.component('login', {
     template: `
     <div class="maindiv">
         <div class="login">
+            <div>
+                {{message}}
+            </div>
             <form @submit.prevent="login" enctype="multipart/form-data" id="loginForm">
 
                 <div class="form-group">
@@ -179,6 +182,9 @@ const Login = Vue.component('login', {
                     if (jsonResponse.message == "User successfully logged in") {
                         console.log(jsonResponse.message);
                         router.push('explore');
+                    } else if (jsonResponse.message == "Username or Password Incorrect") {
+                        console.log(jsonResponse.message);
+                        self.message = jsonResponse.message;
                     }
 
                 })
@@ -186,6 +192,11 @@ const Login = Vue.component('login', {
                     console.log(error)
                 });
 
+        }
+    },
+    data: function() {
+        return {
+            message: ""
         }
     }
 
@@ -330,7 +341,7 @@ const Newpost = Vue.component('newpost', {
     },
     data: function() {
         return {
-            id: 8,
+            id: 10,
             messages: ""
 
         }
@@ -341,33 +352,40 @@ const Newpost = Vue.component('newpost', {
 
 const Explore = Vue.component('explore', {
     template: `
-    <div id="explore_main">
-        <br><br><br>
+    <div id="explore_main">       
+        <ul>
+            <li  class="card" id="card" style="width: 40rem; height:50rem;" v-for="post in posts" >
         
-        <div class= newpost_button>
-         <button v-on:click="createpost"> New Post</button>
-        </div>
+                <div  id="cardlay">
+                    <ul>
+                        <div id="posted_img">
+                            
+                            <li><img class="userprofilephoto" v-bind:src="'../static/uploads/' + post.profile_photo"/> {{post.username}}</li>
+                        </div>
+                    </ul>
+                        <div class="posted_img">
+                            <li id="postphoto"><img class="postphoto" v-bind:src="'../static/uploads/' + post.photo"/></li>
+                        </div>
+                        <div class="caption">
+                            <li>{{post.caption}}</li>
+                        </div>
+                       
+                       
+                </div>
 
-        
-        <div class="homediv" v-for="post in posts">
-            <div class="card" id="cardlay">
-                <div>
-                    <li><img class="userprofilephoto" v-bind:src="'../static/uploads/' + post.profile_photo"/> {{post.username}}</li>
-                    <li><img class="postphoto" v-bind:src="'../static/uploads/' + post.photo"/></li>
-                    <li>{{post.caption}}</li>
-                </div>
-                <div id="likendate">
-                    <li> <i class="fa fa-heart-o" aria-hidden="true"></i>  <i class="fa fa-heart" aria-hidden="true"></i>{{post.likes}} Likes</li>
-                    <li>{{post.created_on}}</li>
-                </div>
-            </div>
-            
+                <div  id="likendate">
+                        <li> <i class="fa fa-heart-o" aria-hidden="true"></i>  <i class="fa fa-heart" aria-hidden="true"></i>{{post.likes}} Likes</li>
+                        <li id="createdate">{{post.created_on}}</li>
+                    </div>
+            </li>
+        </ul>
+        <div class= newpost_button>
+         <button v-on:click="createpost" class="btn btn-primary" id="newpostbtn"> New Post</button>
         </div>
     </div>
     `,
     created: function() {
         let self = this;
-        // fetch("/api/users/" + self.id + "/post")
         fetch("/api/posts")
             .then(function(response) {
                 return response.json();
