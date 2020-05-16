@@ -19,11 +19,6 @@ class SearchableMixin(object):
             db.case(when, value=cls.id)), total
 
 
-followers = db.Table(
-    'follows',
-    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
-)
 
 class Users(db.Model, UserMixin,SearchableMixin):
     __searchable__ = ['username']
@@ -69,18 +64,6 @@ class Users(db.Model, UserMixin,SearchableMixin):
     # def avatar(self, size):
     # 	digest = md5(self.email.lower().encode('utf-8')).hexdigest()
     # 	return ''	
-
-    def follow(self, user):
-        if not self.is_following(user):
-            self.followed.append(user)
-
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
-
-    def is_following(self, user):
-        return self.followed.filter( followers.c.followed_id == user.id).count() > 0
-
     
     def like_post(self, post):
         if not self.post_liked(post):
@@ -127,6 +110,18 @@ class Likes(db.Model):
     def __init__(self,userid,post_id):
         self.user_id=userid
         self.post_id=post_id
+
+    def __repr__(self):
+        return '<Likes {}>'.format(self.id)
+
+class Follows(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer)
+    follower_id  = db.Column(db.Integer)
+
+    def __init__(self,userid,follower_id):
+        self.user_id=userid
+        self.follower_id=follower_id
 
     def __repr__(self):
         return '<Likes {}>'.format(self.id)

@@ -113,8 +113,7 @@ const Register = Vue.component('register', {
                     method: 'POST',
                     body: formdata,
                     headers: {
-                        'X-CSRFToken': token,
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                        'X-CSRFToken': token
                     }
                 })
                 .then(function(response) {
@@ -239,7 +238,8 @@ const User_profile = Vue.component('user-profile', {
                
               </div>
               <div class="follow_button">
-                <button id="followbtn" class="btn btn-primary"> Follow</button>
+                <button v-on:click="followuser()" v-if="follow=='following'" id="followbtn" class="btn btn-primary"> Following</button>
+                <button  v-on:click="followuser()" v-if="follow=='not following'" id="followbtn" class="btn btn-primary"> Follow</button>
               </div>
             </div>
         </div>
@@ -254,7 +254,6 @@ const User_profile = Vue.component('user-profile', {
     `,
     created: function() {
         let self = this;
-        // fetch("/api/users/" + self.id + "/post")
         fetch("/api/users/" + self.id + "/posts", {
                 headers: {
                     'X-CSRFToken': token,
@@ -275,6 +274,8 @@ const User_profile = Vue.component('user-profile', {
                 self.location = jsonResponse.location;
                 self.biography = jsonResponse.biography;
                 self.photo = jsonResponse.photo;
+                self.user_id = jsonResponse.user_id;
+                self.follow = jsonResponse.follow;
 
                 // router.push('login');
 
@@ -282,6 +283,40 @@ const User_profile = Vue.component('user-profile', {
             .catch(function(error) {
                 console.log(error);
             });
+    },
+    methods: {
+        followuser: function() {
+            let self = this;
+            fetch("/api/users/" + self.id + "/follow", {
+
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': token,
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(jsonResponse) {
+                    // display a success message
+                    //undefined - no erros
+                    console.log(jsonResponse.message)
+                        // if (jsonResponse.message == "liked") {
+
+
+
+                    // }
+
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+
+
+
+        }
     },
     data: function() {
         return {
@@ -293,7 +328,9 @@ const User_profile = Vue.component('user-profile', {
             joined_on: "",
             location: "",
             biography: "",
-            photo: ""
+            photo: "",
+            user_id: 0,
+            follow: ""
 
         }
     }

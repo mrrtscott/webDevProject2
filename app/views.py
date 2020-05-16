@@ -1,11 +1,9 @@
 import os
-
 from app import app, db, csrf
 from flask import render_template, flash, request,make_response, redirect, url_for, jsonify, json,session
 from app.forms import RegistrationForm, LoginForm,PostForm
-from app.models import Users, Posts, Likes
+from app.models import Users, Posts, Likes,Follows
 from flask_login import current_user, login_user,logout_user
-from flask import g
 # from app.forms import SearchForm
 from werkzeug.utils import secure_filename
 from datetime import datetime
@@ -70,7 +68,8 @@ def register():
 @login_required
 def userpost(user_id):
     form = PostForm()
-
+    token = request.headers['Authorization'].split()[1]
+    current_id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['id']
     if request.method == 'POST' and form.validate_on_submit():
         caption = form.caption.data
         
@@ -90,6 +89,11 @@ def userpost(user_id):
     allpost=[]
     posts=Posts.query.filter_by(user_id=user_id).all()
     user=Users.query.filter_by(id=user_id).first()
+    follow= Follows.query.filter_by(user_id=current_id,follower_id=user_id).count()
+    if (follow==0):
+        follow="not following"
+    else:
+        follow="following"
 
     for post in posts:
         # getusername of post creator
@@ -99,7 +103,7 @@ def userpost(user_id):
             'photo': post.photo, 'caption': post.caption,
             'no_likes': likes, 'created_on': post.created_on})
 
-    return jsonify({'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost}),200
+    return jsonify({'follow':follow,'user_id':user.id,'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost}),200
 
 
 @app.route('/api/posts', methods=['GET'])
@@ -140,7 +144,7 @@ def addlikes(post_id):
 def followuser(user_id):
     token = request.headers['Authorization'].split()[1]
     current_id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['id']
-    follow=Follow(current_id,user_id)
+    follow=Follows(current_id,user_id)
     db.session.add(follow)
     db.session.commit()
     return jsonify({"message":"followed user"}),201
