@@ -120,11 +120,10 @@ const Register = Vue.component('register', {
                     return response.json();
                 })
                 .then(function(jsonResponse) {
-                    console.log(jsonResponse.errors);
+                    console.log(jsonResponse.message);
                     if (jsonResponse.message == "User successfully registered") {
-                        console.log(jsonResponse.message);
                         // redirect to login page
-                        router.push('login');
+                        router.push('/login');
 
                     }
                 })
@@ -187,14 +186,12 @@ const Login = Vue.component('login', {
                 .then(function(jsonResponse) {
                     console.log(jsonResponse.message);
                     if (jsonResponse.message == "User successfully logged in!") {
-                        console.log(jsonResponse.message);
                         localStorage.setItem('token', jsonResponse.token);
                         localStorage.setItem('userid', jsonResponse.id);
 
-                        router.push('explore');
+                        router.push('/explore');
 
                     } else if (jsonResponse.message == "Username or Password Incorrect") {
-                        console.log(jsonResponse.message);
                         self.message = jsonResponse.message;
                     }
 
@@ -278,6 +275,10 @@ const User_profile = Vue.component('user-profile', {
                 self.follow = jsonResponse.follow;
 
                 // router.push('login');
+                if (jsonResponse.code == "token_invalid_signature") {
+                    router.push('/login');
+
+                }
 
             })
             .catch(function(error) {
@@ -360,7 +361,7 @@ const Newpost = Vue.component('newpost', {
                     </div>
 
                     <div class="postsubmit_button">
-                        <button v-on:click="submitpost" class="btn btn-success" id="newpostsubmitbtn"> Submit</button>
+                        <button class="btn btn-success" id="newpostsubmitbtn"> Submit</button>
                     </div>
 
                 </div>
@@ -472,8 +473,10 @@ const Explore = Vue.component('explore', {
                 self.posts = jsonResponse.posts;
                 self.username = jsonResponse.username;
                 self.photo = jsonResponse.photo;
+                if (jsonResponse.code == "token_invalid_signature") {
+                    router.push('/login');
 
-                // router.push('login');
+                }
 
             })
             .catch(function(error) {
@@ -556,11 +559,11 @@ const Home = Vue.component('home', {
     methods: {
         register: function(event) {
 
-            router.push('register');
+            router.push('/register');
 
         },
         login: function(event) {
-            router.push('login');
+            router.push('/login');
         }
     },
     data: function() {
