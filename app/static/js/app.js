@@ -383,7 +383,13 @@ const Explore = Vue.component('explore', {
 
                 <div  id="likendate">
             
-                        <li> <i  v-on:click="likephoto(post.post_id)" v-if="post.liked=='not liked'" class="fa fa-heart-o" aria-hidden="true"></i>  <i v-if="post.liked=='liked'" class="fa fa-heart" aria-hidden="true"></i>{{post.likes}} Likes</li>
+                        <li> 
+                            <i v-if="post.liked=='liked'" class="fa fa-heart" aria-hidden="true"></i> 
+                            <a href="/explore"> 
+                                <i  v-on:click="likephoto(post.post_id)" v-if="post.liked=='not liked'" class="fa fa-heart-o" aria-hidden="true"></i>
+                            </a> 
+                            {{post.no_likes}} Likes
+                        </li>
                         <li id="createdate">{{post.created_on}}</li>
                     </div>
             </li>
@@ -419,7 +425,7 @@ const Explore = Vue.component('explore', {
             posts: [],
             username: "",
             photo: "",
-            liked: false
+            liked: false,
         }
     },
     methods: {
@@ -452,7 +458,7 @@ const Explore = Vue.component('explore', {
                     //undefined - no erros
                     console.log(jsonResponse.message)
                     if (jsonResponse.message == "liked") {
-                        router.push('/');
+                        created();
                     }
 
                 })

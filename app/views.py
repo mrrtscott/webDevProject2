@@ -97,7 +97,7 @@ def addlikes(post_id):
     return jsonify({"message":"liked"}),201
 
 
-@app.route('/api/users/<user_id>/follow')
+@app.route('/api/users/<user_id>/follow',methods=['POST'])
 def followuser(user_id):
     follow=Follow(current_user.id,user_id)
     db.session.add(follow)

@@ -37,6 +37,14 @@
     grid-template-columns: repeat(2, 1fr);
 }
 
+#likendate a {
+    color: black;
+}
+
+#likendate a:hover {
+    color: blue;
+}
+
 #createdate {
     margin-left: 17%;
 }
