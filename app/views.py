@@ -1,17 +1,49 @@
 import os
-from app import app, db
+
+from app import app, db, csrf
 from flask import render_template, flash, request,make_response, redirect, url_for, jsonify, json,session
 from app.forms import RegistrationForm, LoginForm,PostForm
 from app.models import Users, Posts, Likes
-from flask_login import login_required,current_user, login_user,logout_user
+from flask_login import current_user, login_user,logout_user
 from flask import g
 # from app.forms import SearchForm
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import random, time
 
+import jwt
+from flask import _request_ctx_stack
+from functools import wraps
 
 
+def login_required(f):
+  @wraps(f)
+  def decorated(*args, **kwargs):
+    auth = request.headers.get('Authorization', None)
+    if not auth:
+      return jsonify({'code': 'authorization_header_missing', 'description': 'Authorization header is expected'}), 401
+
+    parts = auth.split()
+
+    if parts[0].lower() != 'bearer':
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must start with Bearer'}), 401
+    elif len(parts) == 1:
+      return jsonify({'code': 'invalid_header', 'description': 'Token not found'}), 401
+    elif len(parts) > 2:
+      return jsonify({'code': 'invalid_header', 'description': 'Authorization header must be Bearer + \s + token'}), 401
+
+    token = parts[1]
+    try:
+         payload = jwt.decode(token, app.config['SECRET_KEY'])
+
+    except jwt.ExpiredSignature:
+        return jsonify({'code': 'token_expired', 'description': 'token is expired'}), 401
+    except jwt.DecodeError:
+        return jsonify({'code': 'token_invalid_signature', 'description': 'Token signature is invalid'}), 401
+
+    return f(*args, **kwargs)
+
+  return decorated
 
 @app.route('/api/users/register', methods=['POST'])
 def register():
@@ -35,6 +67,7 @@ def register():
     return jsonify(error= form_errors(form)),201
 
 @app.route('/api/users/<user_id>/posts',methods=['GET','POST'])
+@login_required
 def userpost(user_id):
     form = PostForm()
 
@@ -70,15 +103,17 @@ def userpost(user_id):
 
 
 @app.route('/api/posts', methods=['GET'])
-#@login_required
+@login_required
 def posts():
     allpost=[]
     posts=Posts.query.all()
+    token = request.headers['Authorization'].split()[1]
+    current_id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['id']
     for post in posts:
         # getusername of post creator
         user=Users.query.filter_by(id=post.user_id).first()
         likes= Likes.query.filter_by(post_id=post.id).count()
-        liked  = Likes.query.filter_by(post_id=post.id,user_id=session['userid']).count()
+        liked  = Likes.query.filter_by(post_id=post.id,user_id=current_id).count()
         if(liked==0):
             liked="not liked"
         else:
@@ -90,16 +125,22 @@ def posts():
     return jsonify({"posts":allpost}),200
 
 @app.route('/api/posts/<post_id>/like',methods=['POST'])
+@login_required
 def addlikes(post_id):
-    like = Likes(current_user.id,post_id)
+    token = request.headers['Authorization'].split()[1]
+    current_id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['id']
+    like = Likes(current_id,post_id)
     db.session.add(like)
     db.session.commit()
     return jsonify({"message":"liked"}),201
 
 
 @app.route('/api/users/<user_id>/follow',methods=['POST'])
+@login_required
 def followuser(user_id):
-    follow=Follow(current_user.id,user_id)
+    token = request.headers['Authorization'].split()[1]
+    current_id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['id']
+    follow=Follow(current_id,user_id)
     db.session.add(follow)
     db.session.commit()
     return jsonify({"message":"followed user"}),201
@@ -110,20 +151,22 @@ def login():
     #     return redirect(url_for('index'))
     form = LoginForm()
     if request.method == "POST" and form.validate_on_submit():
+        username=form.username.data
         user = Users.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             # flash('Invalid username or password')
             # return redirect(url_for('login'))
             return jsonify({"message": "Username or Password Incorrect"}) 
 
-       	login_user(user)
+       	# login_user(user)
+        token = jwt.encode({'id': user.id, 'username':username}, app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
         session['userid']=user.id
-        return jsonify({"message": "User successfully logged in"}) 
+        return jsonify({'token': token, 'message': 'User successfully logged in!','id':user.id}) ,200
     return jsonify(error= form_errors(form)),200
 
 
 @app.route('/api/auth/logout')
-#@login_required
+@login_required
 def logout():
     logout_user()
     return jsonify({"message": "User successfully logged out"}),200

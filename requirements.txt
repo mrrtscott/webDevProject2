@@ -17,3 +17,5 @@ WTForms
 email_validator
 click
 Jinja2
+Flask-JWT
+PyJWT

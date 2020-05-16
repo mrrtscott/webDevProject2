@@ -1,4 +1,6 @@
 /* Add your Application JavaScript */
+/*global localStorage */
+
 Vue.component('app-header', {
     template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
@@ -111,7 +113,8 @@ const Register = Vue.component('register', {
                     method: 'POST',
                     body: formdata,
                     headers: {
-                        'X-CSRFToken': token
+                        'X-CSRFToken': token,
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
                 })
                 .then(function(response) {
@@ -175,17 +178,22 @@ const Login = Vue.component('login', {
                     method: 'POST',
                     body: formdata,
                     headers: {
-                        'X-CSRFToken': token
+                        'X-CSRFToken': token,
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
                     }
                 })
                 .then(function(response) {
                     return response.json();
                 })
                 .then(function(jsonResponse) {
-                    console.log(jsonResponse.errors);
-                    if (jsonResponse.message == "User successfully logged in") {
+                    console.log(jsonResponse.message);
+                    if (jsonResponse.message == "User successfully logged in!") {
                         console.log(jsonResponse.message);
+                        localStorage.setItem('token', jsonResponse.token);
+                        localStorage.setItem('userid', jsonResponse.id);
+
                         router.push('explore');
+
                     } else if (jsonResponse.message == "Username or Password Incorrect") {
                         console.log(jsonResponse.message);
                         self.message = jsonResponse.message;
@@ -247,7 +255,12 @@ const User_profile = Vue.component('user-profile', {
     created: function() {
         let self = this;
         // fetch("/api/users/" + self.id + "/post")
-        fetch("/api/users/" + self.id + "/posts")
+        fetch("/api/users/" + self.id + "/posts", {
+                headers: {
+                    'X-CSRFToken': token,
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
             .then(function(response) {
                 return response.json();
             })
@@ -319,12 +332,14 @@ const Newpost = Vue.component('newpost', {
             self = this;
             let uploadForm = document.getElementById('uploadForm');
             let form_data = new FormData(uploadForm);
-            fetch("/api/users/" + self.id + "/posts", {
+            let userid = localStorage.getItem('userid');
+            fetch("/api/users/" + userid + "/posts", {
 
                     method: 'POST',
                     body: form_data,
                     headers: {
-                        'X-CSRFToken': token
+                        'X-CSRFToken': token,
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
                     },
                     credentials: 'same-origin'
                 })
@@ -336,7 +351,7 @@ const Newpost = Vue.component('newpost', {
                     //undefined - no erros
                     console.log(jsonResponse.message)
                     if (jsonResponse.message == "Successfully created a post!") {
-                        router.push('explore');
+                        router.push('/explore');
                     }
 
 
@@ -385,8 +400,8 @@ const Explore = Vue.component('explore', {
             
                         <li> 
                             <i v-if="post.liked=='liked'" class="fa fa-heart" aria-hidden="true"></i> 
-                            <a href="/explore"> 
-                                <i  v-on:click="likephoto(post.post_id)" v-if="post.liked=='not liked'" class="fa fa-heart-o" aria-hidden="true"></i>
+                            <a> 
+                                <i  v-on:click="likephoto(post.post_id,index)" v-if="post.liked=='not liked'" class="fa fa-heart-o" aria-hidden="true"></i>
                             </a> 
                             {{post.no_likes}} Likes
                         </li>
@@ -401,7 +416,12 @@ const Explore = Vue.component('explore', {
     `,
     created: function() {
         let self = this;
-        fetch("/api/posts")
+        fetch("/api/posts", {
+                headers: {
+                    'X-CSRFToken': token,
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
             .then(function(response) {
                 return response.json();
             })
@@ -425,7 +445,6 @@ const Explore = Vue.component('explore', {
             posts: [],
             username: "",
             photo: "",
-            liked: false,
         }
     },
     methods: {
@@ -437,7 +456,7 @@ const Explore = Vue.component('explore', {
         profile: function(index) {
             router.push('/users/' + this.posts[index].user_id)
         },
-        likephoto: function(postid) {
+        likephoto: function(postid, index) {
             let formData = new FormData();
             formData.set('post_id', postid);
 
@@ -446,7 +465,8 @@ const Explore = Vue.component('explore', {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRFToken': token
+                        'X-CSRFToken': token,
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
                     },
                     credentials: 'same-origin'
                 })
@@ -457,9 +477,11 @@ const Explore = Vue.component('explore', {
                     // display a success message
                     //undefined - no erros
                     console.log(jsonResponse.message)
-                    if (jsonResponse.message == "liked") {
-                        created();
-                    }
+                        // if (jsonResponse.message == "liked") {
+
+
+
+                    // }
 
                 })
                 .catch(function(error) {
@@ -512,14 +534,20 @@ const Logout = Vue.component('logout', {
 
     created: function() {
         let self = this;
-        fetch('/api/auth/logout')
+        fetch('/api/auth/logout', {
+                headers: {
+                    'X-CSRFToken': token,
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
             .then(function(response) {
                 return response.json();
             })
             .then(function(data) {
                 console.log(data);
                 // self.message=data.message
-                router.push('login');
+                localStorage.removeItem('token');
+                router.push('/');
 
             });
     },
