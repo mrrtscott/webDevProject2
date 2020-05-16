@@ -12,12 +12,9 @@ class RegistrationForm(FlaskForm):
     lastname= StringField('LastName')
     email = StringField('Email', validators=[DataRequired(), Email()])
     location = StringField('Location', validators=[DataRequired()])
-    gender = SelectField('Gender', choices=[('Male', 'Male'), ('Female', 'Female')], validators=[DataRequired()])
     biography = TextAreaField('Biography', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Repeat Password', validators=[DataRequired(),EqualTo('password')])
     photo = FileField('Profile Photo', validators=[FileRequired(), FileAllowed(['jpg', 'png', 'Images only, please'])])
-    submit = SubmitField()
 
 
     def validate_username(self, username):
@@ -33,7 +30,6 @@ class RegistrationForm(FlaskForm):
 class LoginForm(FlaskForm):
 	username = StringField('Username', validators=[DataRequired()])
 	password = PasswordField('Password', validators=[DataRequired()])
-	submit = SubmitField()
 
 class PostForm(FlaskForm):
     photo = FileField('Photo', validators=[FileRequired(), FileAllowed(['jpg','jpeg','png', 'IMAGES ONLY!']) ])

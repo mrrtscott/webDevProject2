@@ -1,6 +1,6 @@
 import os
 from app import app, db
-from flask import render_template, flash, request,make_response, redirect, url_for, jsonify, json
+from flask import render_template, flash, request,make_response, redirect, url_for, jsonify, json,session
 from app.forms import RegistrationForm, LoginForm,PostForm
 from app.models import Users, Posts, Likes
 from flask_login import login_required,current_user, login_user,logout_user
@@ -16,7 +16,7 @@ import random, time
 @app.route('/api/users/register', methods=['POST'])
 def register():
     form = RegistrationForm()
-    if request.method=="POST":
+    if request.method=="POST" and form.validate_on_submit():
         username=form.username.data
         password=form.password.data
         firstname=form.firstname.data
@@ -36,9 +36,9 @@ def register():
 
 @app.route('/api/users/<user_id>/posts',methods=['GET','POST'])
 def userpost(user_id):
-    if request.method == 'POST':
-        form = PostForm()
-        # if form.validate_on_submit():
+    form = PostForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
         caption = form.caption.data
         
         photo = form.photo.data
@@ -78,9 +78,14 @@ def posts():
         # getusername of post creator
         user=Users.query.filter_by(id=post.user_id).first()
         likes= Likes.query.filter_by(post_id=post.id).count()
-        allpost.append({'username': user.username , 'user_id': post.user_id, 
+        liked  = Likes.query.filter_by(post_id=post.id,user_id=session['userid']).count()
+        if(liked==0):
+            liked="not liked"
+        else:
+            liked="liked"
+        allpost.append({'post_id':post.id,'username': user.username , 'user_id': post.user_id, 
             'photo': post.photo, 'caption': post.caption,
-            'no_likes': likes, 'created_on': post.created_on,'profile_photo':user.profile_photo})
+            'no_likes': likes, 'created_on': post.created_on,'profile_photo':user.profile_photo,'liked':liked})
 
     return jsonify({"posts":allpost}),200
 
@@ -104,7 +109,7 @@ def login():
     # if current_user.is_authenticated:
     #     return redirect(url_for('index'))
     form = LoginForm()
-    if form.validate_on_submit():
+    if request.method == "POST" and form.validate_on_submit():
         user = Users.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             # flash('Invalid username or password')
@@ -112,6 +117,7 @@ def login():
             return jsonify({"message": "Username or Password Incorrect"}) 
 
        	login_user(user)
+        session['userid']=user.id
         return jsonify({"message": "User successfully logged in"}) 
     return jsonify(error= form_errors(form)),200
 

@@ -1,0 +1,36 @@
+#user_login {
+    border: 1px solid grey;
+    background-color: rgb(255, 255, 255);
+    padding: 5%;
+    width: 50%;
+    height: 40%;
+    display: inline-block;
+}
+
+.login_word {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.login {
+    text-align: center;
+}
+
+
+/* .form_word {
+    display: flex;
+} */
+
+
+/* .login {
+    display: flex;
+} */
+
+#user_login label {
+    font-weight: bold;
+    color: black;
+}
+
+.login_button button {
+    background-color: rgb(126, 211, 33);
+}

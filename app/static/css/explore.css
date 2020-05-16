@@ -61,4 +61,7 @@
     width: 70%;
 }
 
-.newpost_button {}
+#userinfo:hover {
+    color: blue;
+    text-decoration: underline;
+}

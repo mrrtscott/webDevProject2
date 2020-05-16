@@ -1,0 +1,12 @@
+.newpost_div {
+    border: 1px solid grey;
+    background-color: rgb(255, 255, 255);
+    padding: 5%;
+    width: 50%;
+    height: 40%;
+    align-items: center;
+}
+
+.newpost_button button {
+    background-color: rgb(126, 211, 33);
+}

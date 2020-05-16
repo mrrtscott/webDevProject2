@@ -136,29 +136,33 @@ const Register = Vue.component('register', {
 
 const Login = Vue.component('login', {
     template: `
-    <div class="maindiv">
-        <div class="login">
+    <div class="maindiv login">
             <div>
                 {{message}}
             </div>
-            <form @submit.prevent="login" enctype="multipart/form-data" id="loginForm">
-
-                <div class="form-group">
-                    <label for ="username">Username</label>
-                    <input type="text" name="username" id="username" class="form-control"/>
+                <div class="login_word">
+                    <p>Login</p>
                 </div>
+                <form @submit.prevent="login" enctype="multipart/form-data" id="loginForm">
+                    <div id="user_login">
 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" class="form-control"/>
-                </div>
+                        <div class="form-group">
+                            <label for ="username">Username</label>
+                            <input type="text" name="username" id="username" class="form-control"/>
+                        </div>
 
-                <div class="login_button">
-                    <button type="submit" name="login" class="btn btn-success">Login</button>
-                </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" name="password" id="password" class="form-control"/>
+                        </div>
 
-            </form>
-        </div>   
+                        <div class="login_button">
+                            <button type="submit" name="login" class="btn btn-success">Login</button>
+                        </div>
+                    </div>
+                </form>
+              
+        
     </div>
     `,
     methods: {
@@ -288,22 +292,26 @@ const Newpost = Vue.component('newpost', {
     <div class="maindiv">
        
         <form @submit.prevent="uploadpost" enctype="multipart/form-data" id="uploadForm">
+
+            <div class="newpost_div">
        
-        <div class="form-group">
-            <label for="photo">Photo</label>
-            <input name="photo" id="photo" type="file">
-        </div>
+                <div class="form-group">
+                    <label for="photo">Photo</label>
+                    <input name="photo" id="photo" type="file" >
+                </div>
 
-        <div class="form-group">
-            <label for="caption">Caption</label>
-            <textarea class="form-control" name="caption" id="caption" placeholder="Enter description here"></textarea>
-        </div>
+                <div class="form-group">
+                    <label for="caption">Caption</label>
+                    <textarea class="form-control" name="caption" id="caption" placeholder="Enter description here" ></textarea>
+                </div>
 
-        <div class="register_button">
-            <button type="submit" name="upload" class="btn btn-success">Upload</button>
-        </div>
+                <div class="register_button">
+                    <button type="submit" name="upload" class="btn btn-success">Upload</button>
+                </div>
 
-    </form>
+            </div>
+
+        </form>
     </div>
     `,
     methods: {
@@ -354,13 +362,13 @@ const Explore = Vue.component('explore', {
     template: `
     <div id="explore_main">       
         <ul>
-            <li  class="card" id="card" style="width: 40rem; height:50rem;" v-for="post in posts" >
+            <li  class="card" id="card" style="width: 40rem; height:50rem;" v-for="(post,index) in posts" >
         
                 <div  id="cardlay">
                     <ul>
-                        <div id="posted_img">
+                        <div id="posted_img" v-on:click="profile(index)">
                             
-                            <li><img class="userprofilephoto" v-bind:src="'../static/uploads/' + post.profile_photo"/> {{post.username}}</li>
+                            <li id="userinfo"><img class="userprofilephoto" v-bind:src="'../static/uploads/' + post.profile_photo"/> {{post.username}}</li>
                         </div>
                     </ul>
                         <div class="posted_img">
@@ -374,7 +382,8 @@ const Explore = Vue.component('explore', {
                 </div>
 
                 <div  id="likendate">
-                        <li> <i class="fa fa-heart-o" aria-hidden="true"></i>  <i class="fa fa-heart" aria-hidden="true"></i>{{post.likes}} Likes</li>
+            
+                        <li> <i  v-on:click="likephoto(post.post_id)" v-if="post.liked=='not liked'" class="fa fa-heart-o" aria-hidden="true"></i>  <i v-if="post.liked=='liked'" class="fa fa-heart" aria-hidden="true"></i>{{post.likes}} Likes</li>
                         <li id="createdate">{{post.created_on}}</li>
                     </div>
             </li>
@@ -409,13 +418,47 @@ const Explore = Vue.component('explore', {
         return {
             posts: [],
             username: "",
-            photo: ""
+            photo: "",
+            liked: false
         }
     },
     methods: {
         createpost: function(event) {
 
             router.push('/posts/new');
+
+        },
+        profile: function(index) {
+            router.push('/users/' + this.posts[index].user_id)
+        },
+        likephoto: function(postid) {
+            let formData = new FormData();
+            formData.set('post_id', postid);
+
+            fetch("/api/posts/" + postid + "/like", {
+
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': token
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(jsonResponse) {
+                    // display a success message
+                    //undefined - no erros
+                    console.log(jsonResponse.message)
+                    if (jsonResponse.message == "liked") {
+                        router.push('/');
+                    }
+
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
 
         }
     }
