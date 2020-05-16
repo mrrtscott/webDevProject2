@@ -4,9 +4,20 @@
     padding: 5%;
     width: 50%;
     height: 40%;
-    align-items: center;
+    display: inline-block;
 }
 
-.newpost_button button {
+.postsubmit_button button {
     background-color: rgb(126, 211, 33);
+    width: 70%;
+}
+
+.newpost_word {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.newpost_div label {
+    font-weight: bold;
+    color: black;
 }

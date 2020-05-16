@@ -33,4 +33,5 @@
 
 .login_button button {
     background-color: rgb(126, 211, 33);
+    width: 100%;
 }

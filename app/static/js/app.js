@@ -303,28 +303,32 @@ const User_profile = Vue.component('user-profile', {
 const Newpost = Vue.component('newpost', {
     template: `
     <div class="maindiv">
+
+        <div class="newpost_word">
+            <p>New Post</p>
+        </div>
        
-        <form @submit.prevent="uploadpost" enctype="multipart/form-data" id="uploadForm">
+            <form @submit.prevent="uploadpost" enctype="multipart/form-data" id="uploadForm">
 
-            <div class="newpost_div">
-       
-                <div class="form-group">
-                    <label for="photo">Photo</label>
-                    <input name="photo" id="photo" type="file" >
+                <div class="newpost_div">
+        
+                    <div class="form-group">
+                        <label for="photo">Photo</label>
+                        <input name="photo" id="photo" type="file" >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="caption">Caption</label>
+                        <textarea class="form-control" name="caption" id="caption" placeholder="Enter description here" ></textarea>
+                    </div>
+
+                    <div class="postsubmit_button">
+                        <button v-on:click="submitpost" class="btn btn-success" id="newpostsubmitbtn"> Submit</button>
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="caption">Caption</label>
-                    <textarea class="form-control" name="caption" id="caption" placeholder="Enter description here" ></textarea>
-                </div>
-
-                <div class="register_button">
-                    <button type="submit" name="upload" class="btn btn-success">Upload</button>
-                </div>
-
-            </div>
-
-        </form>
+            </form>
     </div>
     `,
     methods: {
