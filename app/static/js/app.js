@@ -234,7 +234,7 @@ const User_profile = Vue.component('user-profile', {
             </div>
             <div id="followers">
               <div id="row1">
-                    <li class="post_num">6</li>
+                    <li class="post_num">{{postcount}}</li>
                     <li class="followers_num">{{followcount}}</li>
                     <li>Posts</li>
                     <li >Followers</li>
@@ -242,8 +242,8 @@ const User_profile = Vue.component('user-profile', {
                
               </div>
               <div class="follow_button">
-                <button v-on:click="followuser()" v-if="follow=='following'" id="followbtn" class="btn btn-success"> Following</button>
-                <button  v-on:click="followuser()" v-if="follow=='not following'" id="followbtn" class="btn btn-primary"> Follow</button>
+                <button v-on:click="followuser()" v-if="follow=='following' && user_id!=currentuser_id" id="followbtn" class="btn btn-success"> Following</button>
+                <button  v-on:click="followuser()" v-if="follow=='not following' && user_id!=currentuser_id" id="followbtn" class="btn btn-primary"> Follow</button>
               </div>
             </div>
         </div>
@@ -281,7 +281,7 @@ const User_profile = Vue.component('user-profile', {
                 self.user_id = jsonResponse.user_id;
                 self.follow = jsonResponse.follow;
                 self.followcount = jsonResponse.followcount;
-
+                self.postcount = jsonResponse.postcount;
                 // router.push('login');
                 if (jsonResponse.code == "token_invalid_signature") {
                     router.push('/login');
@@ -336,7 +336,9 @@ const User_profile = Vue.component('user-profile', {
             photo: "",
             user_id: 0,
             follow: "",
-            followcount: 0
+            followcount: 0,
+            postcount: 0,
+            currentuser_id: localStorage.getItem('userid')
 
         }
     }
@@ -413,7 +415,7 @@ const Newpost = Vue.component('newpost', {
     },
     data: function() {
         return {
-            id: 10,
+            id: 0,
             messages: ""
 
         }
