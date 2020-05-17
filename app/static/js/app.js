@@ -48,7 +48,7 @@ Vue.component('app-footer', {
 
 const Register = Vue.component('register', {
     template: `
-    <div class="maindiv">
+    <div class="maindiv new">
         <div class="register_form">
             <form @submit.prevent="registration" enctype="multipart/form-data" id="signupForm">
             
@@ -139,7 +139,7 @@ const Register = Vue.component('register', {
 
 const Login = Vue.component('login', {
     template: `
-    <div class="maindiv login">
+    <div class="maindiv new">
             <div>
                 {{message}}
             </div>
@@ -345,7 +345,7 @@ const User_profile = Vue.component('user-profile', {
 
 const Newpost = Vue.component('newpost', {
     template: `
-    <div class="newp_maindiv">
+    <div class="maindiv new">
 
         <div class="newpost_word">
             <p>New Post</p>
@@ -357,13 +357,13 @@ const Newpost = Vue.component('newpost', {
         
                     <div class="form-group">
                         <div class="post_photo">
-                            <label for="photo">Photo</label>
+                            <label class="label" for="photo">Photo</label>
                         </div>
                         <input name="photo" id="photo" type="file" >
                     </div>
 
                     <div class="form-group">
-                        <label for="caption">Caption</label>
+                        <label class="label" for="caption">Caption</label>
                         <textarea class="form-control" name="caption" id="caption" placeholder="Enter description here" ></textarea>
                     </div>
 

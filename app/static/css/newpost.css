@@ -9,12 +9,12 @@
 
 .newp_maindiv {
     margin-top: 12%;
-    text-align: center;
+    /* text-align: center; */
 }
 
 .postsubmit_button button {
     background-color: rgb(126, 211, 33);
-    width: 70%;
+    width: 80%;
 }
 
 .newpost_word {
@@ -25,4 +25,13 @@
 .newpost_div label {
     font-weight: bold;
     color: black;
+    text-align: left;
+}
+
+.newpost {
+    text-align: center;
+}
+
+.label {
+    text-align: left;
 }
