@@ -23,7 +23,7 @@ Vue.component('app-header', {
                 <router-link class="nav-link" to="/explore">Explore <span class="sr-only"></span></router-link>
             </li>
             <li class="nav-item active">
-                <router-link class="nav-link" to="/users/userid">My Profile <span class="sr-only"></span></router-link>
+                <router-link class="nav-link"  v-on:click="MyProfile()" >My Profile <span class="sr-only"></span></router-link>
             </li>
             <li class="nav-item active">
                 <router-link class="nav-link" to="/logout">Logout <span class="sr-only"></span></router-link>
@@ -33,7 +33,21 @@ Vue.component('app-header', {
     </div>
      
     </nav>
-    `
+    `,
+    methods: {
+        MyProfile: function() {
+            let userId;
+            try {
+                userId = localStorage.getItem('userid');
+                router.push('/users/' + userId);
+            } catch (e) {
+                router.push('/login')
+            }
+        }
+    },
+    data: function() {
+        return {}
+    }
 });
 
 Vue.component('app-footer', {
