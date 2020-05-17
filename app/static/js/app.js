@@ -33,6 +33,7 @@ Vue.component('app-header', {
     </div>
      
     </nav>
+
     `,
     methods: {
         MyProfile: function() {

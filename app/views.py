@@ -8,7 +8,7 @@ from flask_login import current_user, login_user,logout_user
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import random, time
-
+from sqlalchemy import desc
 import jwt
 from flask import _request_ctx_stack
 from functools import wraps
@@ -87,7 +87,7 @@ def userpost(user_id):
         return jsonify({'message': 'Successfully created a post!'}),201
   
     allpost=[]
-    posts=Posts.query.filter_by(user_id=user_id).all()
+    posts=Posts.query.filter_by(user_id=user_id).order_by(desc(Posts.id)).all()
     user=Users.query.filter_by(id=user_id).first()
     follow= Follows.query.filter_by(user_id=current_id,follower_id=user_id).count()
     if (follow==0):
@@ -112,7 +112,7 @@ def userpost(user_id):
 @login_required
 def posts():
     allpost=[]
-    posts=Posts.query.all()
+    posts=Posts.query.order_by(desc(Posts.id)).all()
     token = request.headers['Authorization'].split()[1]
     current_id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['id']
     for post in posts:
