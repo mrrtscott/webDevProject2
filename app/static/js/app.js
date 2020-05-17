@@ -23,7 +23,7 @@ Vue.component('app-header', {
                 <router-link class="nav-link" to="/explore">Explore <span class="sr-only"></span></router-link>
             </li>
             <li class="nav-item active">
-                <router-link class="nav-link"  v-on:click="MyProfile()" >My Profile <span class="sr-only"></span></router-link>
+                         <span class="nav-link" @click="MyProfile">My Profile</span>
             </li>
             <li class="nav-item active">
                 <router-link class="nav-link" to="/logout">Logout <span class="sr-only"></span></router-link>
