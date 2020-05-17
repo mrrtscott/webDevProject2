@@ -7,7 +7,7 @@
 .maindiv {
     /* display: grid;
     grid-column-gap: 25px; */
-    margin-top: 20%;
+    margin-top: 10%;
 }
 
 .navbar {
@@ -35,5 +35,5 @@ body {
 }
 
 .new {
-    margin-left: 30%;
+    margin-left: 25%;
 }

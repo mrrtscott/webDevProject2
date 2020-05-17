@@ -64,7 +64,7 @@ Vue.component('app-footer', {
 
 const Register = Vue.component('register', {
     template: `
-    <div class="maindiv_new">
+    <div class="maindiv new">
         <div class="register_word">
             <p>Register</p>
         </div>
@@ -627,7 +627,7 @@ const Logout = Vue.component('logout', {
 })
 const NotFound = Vue.component('not-found', {
     template: `
-    <div class="maindiv">
+    <div class="maindiv">  
         <h1>404 - Not Found</h1>
     </div>
     `,

@@ -7,6 +7,10 @@
     display: inline-block;
 }
 
+.maindiv.new {
+    margin-bottom: 15%;
+}
+
 .newp_maindiv {
     margin-top: 12%;
     /* text-align: center; */
@@ -20,6 +24,7 @@
 .newpost_word {
     font-weight: bold;
     font-size: x-large;
+    margin-top: 20%;
 }
 
 .newpost_div label {

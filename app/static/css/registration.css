@@ -10,6 +10,7 @@
 .register_word {
     font-weight: bold;
     font-size: x-large;
+    margin-top: 15%;
 }
 
 .register_button button {
