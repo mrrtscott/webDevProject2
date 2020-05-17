@@ -10,6 +10,25 @@
     margin-top: 20%;
 }
 
+.navbar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 60%
+}
+
+#navbarSupportedContent ul {
+    text-align: left;
+}
+
+
+/* #navbar_img {
+    justify-content: flex-start;
+}
+
+.navSupportContent {
+    justify-content: flex-end;
+} */
+
 body {
     background-color: rgb(245, 239, 230);
 }

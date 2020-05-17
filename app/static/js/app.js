@@ -4,11 +4,11 @@
 Vue.component('app-header', {
     template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-    <div>
+    <div id="img_nav">
         <img>  
         <a class="navbar-brand appname" href="#">Photogram</a>
     </div>
-    <div>
+    <div class="navContents">
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -310,14 +310,9 @@ const User_profile = Vue.component('user-profile', {
                 })
                 .then(function(jsonResponse) {
                     // display a success message
-                    //undefined - no erros
                     console.log(jsonResponse.message);
-                    // if (jsonResponse.message == "liked") {
-
-                    self.followcount = jsonResponse.followcount;
+                    self.followcount++;
                     self.follow = "following";
-
-                    // }
 
                 })
                 .catch(function(error) {

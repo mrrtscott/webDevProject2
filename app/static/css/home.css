@@ -7,7 +7,6 @@ ul {
     list-style: none;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1.5%;
-    /* border: 1px solid grey; */
 }
 
 .rightside_home {
