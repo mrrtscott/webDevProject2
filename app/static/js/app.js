@@ -5,6 +5,7 @@ Vue.component('app-header', {
     template: `
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div id="img_nav">
+        <a><i class="fa fa-camera" aria-hidden="true"></i></a>
         <img>  
         <a class="navbar-brand appname" href="#">Photogram</a>
     </div>
@@ -63,7 +64,7 @@ Vue.component('app-footer', {
 
 const Register = Vue.component('register', {
     template: `
-    <div class="maindiv new">
+    <div class="maindiv_new">
         <div class="register_word">
             <p>Register</p>
         </div>
