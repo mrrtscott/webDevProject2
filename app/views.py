@@ -94,6 +94,7 @@ def userpost(user_id):
         follow="not following"
     else:
         follow="following"
+    followcount= Follows.query.filter_by(follower_id=user_id).count()
 
     for post in posts:
         # getusername of post creator
@@ -103,7 +104,7 @@ def userpost(user_id):
             'photo': post.photo, 'caption': post.caption,
             'no_likes': likes, 'created_on': post.created_on})
 
-    return jsonify({'follow':follow,'user_id':user.id,'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost}),200
+    return jsonify({'followcount':followcount,'follow':follow,'user_id':user.id,'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost}),200
 
 
 @app.route('/api/posts', methods=['GET'])
@@ -136,6 +137,7 @@ def addlikes(post_id):
     like = Likes(current_id,post_id)
     db.session.add(like)
     db.session.commit()
+
     return jsonify({"message":"liked"}),201
 
 
@@ -147,7 +149,9 @@ def followuser(user_id):
     follow=Follows(current_id,user_id)
     db.session.add(follow)
     db.session.commit()
-    return jsonify({"message":"followed user"}),201
+    followcount= Follows.query.filter_by(follower_id=user_id).count()
+
+    return jsonify({"message":"followed user","followcount":followcount}),201
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():

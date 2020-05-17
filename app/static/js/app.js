@@ -120,6 +120,8 @@ const Register = Vue.component('register', {
                     return response.json();
                 })
                 .then(function(jsonResponse) {
+                    console.log(jsonResponse);
+
                     console.log(jsonResponse.message);
                     if (jsonResponse.message == "User successfully registered") {
                         // redirect to login page
@@ -149,12 +151,12 @@ const Login = Vue.component('login', {
 
                         <div class="form-group">
                             <label for ="username">Username</label>
-                            <input type="text" name="username" id="username" class="form-control"/>
+                            <input type="text" name="username" id="username" class="form-control" required/>
                         </div>
 
                         <div class="form-group">
                             <label for="password">Password</label>
-                            <input type="password" name="password" id="password" class="form-control"/>
+                            <input type="password" name="password" id="password" class="form-control" required />
                         </div>
 
                         <div class="login_button">
@@ -228,7 +230,7 @@ const User_profile = Vue.component('user-profile', {
             <div id="followers">
               <div id="row1">
                     <li class="post_num">6</li>
-                    <li class="followers_num">10</li>
+                    <li class="followers_num">{{followcount}}</li>
                     <li>Posts</li>
                     <li >Followers</li>
                
@@ -273,6 +275,7 @@ const User_profile = Vue.component('user-profile', {
                 self.photo = jsonResponse.photo;
                 self.user_id = jsonResponse.user_id;
                 self.follow = jsonResponse.follow;
+                self.followcount = jsonResponse.followcount;
 
                 // router.push('login');
                 if (jsonResponse.code == "token_invalid_signature") {
@@ -303,10 +306,11 @@ const User_profile = Vue.component('user-profile', {
                 .then(function(jsonResponse) {
                     // display a success message
                     //undefined - no erros
-                    console.log(jsonResponse.message)
-                        // if (jsonResponse.message == "liked") {
+                    console.log(jsonResponse.message);
+                    // if (jsonResponse.message == "liked") {
 
-
+                    self.followcount = jsonResponse.followcount;
+                    self.follow = "following";
 
                     // }
 
@@ -331,7 +335,8 @@ const User_profile = Vue.component('user-profile', {
             biography: "",
             photo: "",
             user_id: 0,
-            follow: ""
+            follow: "",
+            followcount: 0
 
         }
     }
@@ -340,7 +345,7 @@ const User_profile = Vue.component('user-profile', {
 
 const Newpost = Vue.component('newpost', {
     template: `
-    <div class="maindiv">
+    <div class="newp_maindiv">
 
         <div class="newpost_word">
             <p>New Post</p>
@@ -351,7 +356,9 @@ const Newpost = Vue.component('newpost', {
                 <div class="newpost_div">
         
                     <div class="form-group">
-                        <label for="photo">Photo</label>
+                        <div class="post_photo">
+                            <label for="photo">Photo</label>
+                        </div>
                         <input name="photo" id="photo" type="file" >
                     </div>
 
@@ -502,6 +509,7 @@ const Explore = Vue.component('explore', {
         },
         likephoto: function(postid, index) {
             let formData = new FormData();
+            let self = this;
             formData.set('post_id', postid);
 
             fetch("/api/posts/" + postid + "/like", {
@@ -519,13 +527,10 @@ const Explore = Vue.component('explore', {
                 })
                 .then(function(jsonResponse) {
                     // display a success message
-                    //undefined - no erros
+
                     console.log(jsonResponse.message)
-                        // if (jsonResponse.message == "liked") {
-
-
-
-                    // }
+                    self.posts[index].liked = "liked";
+                    self.posts[index].no_likes++;
 
                 })
                 .catch(function(error) {
