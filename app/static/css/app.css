@@ -13,11 +13,11 @@
 .navbar {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 60%
+    grid-gap: 55%;
 }
 
-#navbarSupportedContent ul {
-    text-align: left;
+#navbarSupportedContent {
+    justify-items: end;
 }
 
 
