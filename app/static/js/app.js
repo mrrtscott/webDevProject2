@@ -49,58 +49,63 @@ Vue.component('app-footer', {
 const Register = Vue.component('register', {
     template: `
     <div class="maindiv new">
-        <div class="register_form">
-            <form @submit.prevent="registration" enctype="multipart/form-data" id="signupForm">
-            
-                <div class="form-group">
-                    <label for ="username">Username</label>
-                    <input type="text" name="username" id="username" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for ="password">Password</label>
-                    <input type="password" name="password" id="password" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for ="firstname">Firstname</label>
-                    <input type="text" name="firstname" id="firstname" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for ="lastname">lastname</label>
-                    <input type="text" name="lastname" id="lastname" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for ="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for ="location">Location</label>
-                    <input type="text" name="location" id="location" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for ="biography">Biography</label>
-                    <div class="biography">
-                        <textarea  name="biography" id="biography" rows="4" cols="60" coclass="form-control"/>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for ="photo">Photo</label>
-                    <input type="file" name="photo" id="photo">
-
-                </div>
-
-                <div class="register_button">
-                    <button type="submit" name="register" class="btn btn-success">Register</button>
-                </div>
-
-            </form>
+        <div class="register_word">
+            <p>Register</p>
         </div>
+            <div class="register_form">
+                <form @submit.prevent="registration" enctype="multipart/form-data" id="signupForm">
+                
+                    <div class="form-group">
+                        <label for ="username">Username</label>
+                        <input type="text" name="username" id="username" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for ="password">Password</label>
+                        <input type="password" name="password" id="password" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for ="firstname">Firstname</label>
+                        <input type="text" name="firstname" id="firstname" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for ="lastname">Lastname</label>
+                        <input type="text" name="lastname" id="lastname" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for ="email">Email</label>
+                        <input type="email" name="email" id="email" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for ="location">Location</label>
+                        <input type="text" name="location" id="location" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for ="biography">Biography</label>
+                        <div class="biography">
+                            <textarea  name="biography" id="biography" rows="4" cols="56" coclass="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="reg_label">
+                            <label for ="photo">Photo</label>
+                        </div>
+                        <input type="file" name="photo" id="photo">
+
+                    </div>
+
+                    <div class="register_button">
+                        <button type="submit" name="register" class="btn btn-success">Register</button>
+                    </div>
+
+                </form>
+            </div>
     </div>
     `,
     methods: {
@@ -237,7 +242,7 @@ const User_profile = Vue.component('user-profile', {
                
               </div>
               <div class="follow_button">
-                <button v-on:click="followuser()" v-if="follow=='following'" id="followbtn" class="btn btn-primary"> Following</button>
+                <button v-on:click="followuser()" v-if="follow=='following'" id="followbtn" class="btn btn-success"> Following</button>
                 <button  v-on:click="followuser()" v-if="follow=='not following'" id="followbtn" class="btn btn-primary"> Follow</button>
               </div>
             </div>

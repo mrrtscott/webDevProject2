@@ -1,0 +1,23 @@
+.register_form {
+    border: 1px solid grey;
+    background-color: rgb(255, 255, 255);
+    padding: 5%;
+    width: 500px;
+    height: 40%;
+    display: inline-block;
+}
+
+.register_word {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.register_button button {
+    background-color: rgb(126, 211, 33);
+    width: 100%;
+}
+
+.register_form label {
+    font-weight: bold;
+    color: black;
+}
