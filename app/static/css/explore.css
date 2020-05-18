@@ -14,6 +14,11 @@
 .postphoto {
     width: 39.87rem;
     height: 25rem;
+    margin-top: 3%;
+}
+
+.explore_name a {
+    margin-top: 10%;
 }
 
 #card {

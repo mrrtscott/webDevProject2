@@ -450,7 +450,7 @@ const Explore = Vue.component('explore', {
                     <ul>
                         <div id="posted_img" v-on:click="profile(index)">
                             
-                            <li id="userinfo"><img class="userprofilephoto" v-bind:src="'../static/uploads/' + post.profile_photo"/> {{post.username}}</li>
+                            <li id="userinfo"><img class="userprofilephoto" v-bind:src="'../static/uploads/' + post.profile_photo"/> <a class="explore_name"> {{post.username}} </a></li>
                         </div>
                     </ul>
                         <div class="posted_img">

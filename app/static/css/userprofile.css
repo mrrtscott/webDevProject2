@@ -30,6 +30,12 @@
 .profilephoto {
     width: 200px;
     height: 190px;
+    margin-bottom: 8%;
+    margin-left: 2%;
+}
+
+.container {
+    margin-top: 5%;
 }
 
 #followers {
