@@ -240,7 +240,7 @@ const User_profile = Vue.component('user-profile', {
             <img class="profilephoto" v-bind:src="'../static/uploads/' + photo"/>
             <div id="middle">
                 <ul>
-                    <li id="firstname" class="firstname">{{firstname}} {{lastname}}</li>
+                    <li id="firstname" class="user_firstname">{{firstname}} {{lastname}}</li>
                     <li id="locationli">{{location}}</li>
                     <li>Member since {{joined_on}}</li>
                     <li id="biographyli"> {{biography}}</li>

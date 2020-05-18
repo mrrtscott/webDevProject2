@@ -63,10 +63,6 @@
     height: 250px;
 }
 
-.image__list li {
-    /* border: 1px solid rgb(211, 211, 211); */
-}
-
 #gallery {
     margin-top: 7%;
 }
@@ -98,9 +94,10 @@
     /* margin: 3%; */
 }
 
-#firstname {
+.user_firstname {
     font-weight: bold;
     font-size: large;
+    color: black;
 }
 
 #locationli {
