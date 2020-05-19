@@ -284,6 +284,10 @@ const User_profile = Vue.component('user-profile', {
                 return response.json();
             })
             .then(function(jsonResponse) {
+                if (jsonResponse.code == "token_invalid_signature") {
+                    router.push('/login');
+
+                }
                 console.log(jsonResponse);
                 // self.message=data.message
                 self.firstname = jsonResponse.firstname;
@@ -299,10 +303,7 @@ const User_profile = Vue.component('user-profile', {
                 self.followcount = jsonResponse.followcount;
                 self.postcount = jsonResponse.postcount;
                 // router.push('login');
-                if (jsonResponse.code == "token_invalid_signature") {
-                    router.push('/login');
 
-                }
 
             })
             .catch(function(error) {
@@ -493,15 +494,16 @@ const Explore = Vue.component('explore', {
                 return response.json();
             })
             .then(function(jsonResponse) {
+                if (jsonResponse.code == "token_invalid_signature") {
+                    router.push('/login');
+
+                }
                 console.log(jsonResponse);
                 // self.message=data.message
                 self.posts = jsonResponse.posts;
                 self.username = jsonResponse.username;
                 self.photo = jsonResponse.photo;
-                if (jsonResponse.code == "token_invalid_signature") {
-                    router.push('/login');
 
-                }
 
             })
             .catch(function(error) {
@@ -611,12 +613,12 @@ const Logout = Vue.component('logout', {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 // self.message=data.message
                 if (data.code == "token_invalid_signature") {
                     router.push('/login');
 
                 } else {
+                    console.log(data);
                     localStorage.removeItem('token');
                     router.push('/');
                 }
