@@ -613,8 +613,14 @@ const Logout = Vue.component('logout', {
             .then(function(data) {
                 console.log(data);
                 // self.message=data.message
-                localStorage.removeItem('token');
-                router.push('/');
+                if (data.code == "token_invalid_signature") {
+                    router.push('/login');
+
+                } else {
+                    localStorage.removeItem('token');
+                    router.push('/');
+                }
+
 
             });
     },
