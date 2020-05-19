@@ -32,7 +32,7 @@ class Users(db.Model, UserMixin,SearchableMixin):
     location = db.Column(db.String(150))
     profile_photo  = db.Column(db.String(300))
     joined_on = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
+    
     # posts = db.relationship('Posts',backref='author', lazy='dynamic',passive_deletes=True )
     # posts_liked = db.relationship('Likes', backref='user', lazy='dynamic',passive_deletes=True)
     # followed = db.relationship(

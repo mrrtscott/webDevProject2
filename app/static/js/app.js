@@ -472,7 +472,7 @@ const Explore = Vue.component('explore', {
                             </a> 
                             {{post.no_likes}} Likes
                         </li>
-                        <li id="createdate">{{post.created_on}}</li>
+                        <li id="createdate">{{ post.created_on}}</li>
                     </div>
             </li>
         </ul>

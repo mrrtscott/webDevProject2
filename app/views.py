@@ -105,7 +105,7 @@ def userpost(user_id):
             'photo': post.photo, 'caption': post.caption,
             'no_likes': likes, 'created_on': post.created_on})
 
-    return jsonify({'postcount':postcount,'followcount':followcount,'follow':follow,'user_id':user.id,'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on,'biography':user.biography,'photo':user.profile_photo,'posts':allpost}),200
+    return jsonify({'postcount':postcount,'followcount':followcount,'follow':follow,'user_id':user.id,'username':user.username,'firstname':user.firstname,'lastname':user.lastname,'location':user.location,'joinedon':user.joined_on.strftime('%B %Y'),'biography':user.biography,'photo':user.profile_photo,'posts':allpost}),200
 
 
 @app.route('/api/posts', methods=['GET'])
@@ -126,7 +126,7 @@ def posts():
             liked="liked"
         allpost.append({'post_id':post.id,'username': user.username , 'user_id': post.user_id, 
             'photo': post.photo, 'caption': post.caption,
-            'no_likes': likes, 'created_on': post.created_on,'profile_photo':user.profile_photo,'liked':liked})
+            'no_likes': likes, 'created_on': post.created_on.strftime('%d %B %Y'),'profile_photo':user.profile_photo,'liked':liked})
 
     return jsonify({"posts":allpost}),200
 
